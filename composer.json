@@ -1,0 +1,16 @@
+{
+  "name": "code-marathon/2023",
+  "type": "project",
+  "description": "Code Marathon 2023 Project",
+  "license": "MIT",
+  "require": {
+    "php": "^8.0",
+    "ext-pdo": "*",
+    "vlucas/phpdotenv": "^5.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  }
+}
