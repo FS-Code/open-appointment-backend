@@ -60,4 +60,38 @@ class Request
     {
         return '';
     }
+
+    public static function get(string $key, $default = null): ?string
+    {
+        return isset($_GET[$key]) ? filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS) : $default;
+    }
+
+    public static function post(string $key, $default = null): ?string
+    {
+        return isset($_POST[$key]) ? filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS) : $default;
+    }
+
+    public static function cookie(string $key, $default = null): ?string
+    {
+        return isset($_COOKIE[$key]) ? filter_var($_COOKIE[$key], FILTER_SANITIZE_SPECIAL_CHARS) : $default;
+    }
+
+    public static function has(string $type, $keys): bool
+    {
+        if (!is_array($keys)) {
+            $keys = [$keys];
+        }
+
+        foreach ($keys as $key) {
+            if ($type == 'GET' && self::get($key) === null) {
+                return false;
+            }
+
+            if ($type == 'POST' && self::post($key) === null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
