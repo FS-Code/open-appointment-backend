@@ -43,7 +43,7 @@ class DateTime {
         return (array) explode(' ', self::$options);
     }
 
-    private static function title(string $format, $key) : string
+    private static function title(string $format, int $key) : string
     {
         if($format == 'H'){
             return ['hr', 'hrs'][$key];
