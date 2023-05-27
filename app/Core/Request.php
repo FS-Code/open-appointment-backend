@@ -60,4 +60,80 @@ class Request
     {
         return '';
     }
+
+    public static function get(string $key , $default = null ): string|null
+    {
+        if(isset($_GET[$key]))
+        {
+            return filter_var($_GET[$key], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        }      
+        return $default;
+        
+    }
+
+    public static function post(string $key, $default = null ): string|null
+    {
+        if(isset($_POST[$key]))
+        {
+            return filter_var($_POST[$key], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        }
+        return $default;
+    }
+
+    public static function cookie(string $key, $default = null ): string|null
+    {
+        if(isset($_COOKIE[$key]))
+        {
+            
+            return filter_var($_COOKIE[$key], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        } 
+        return $default;
+    }
+
+    public static function has(string $method, string|array $keys): bool
+    {
+        $method=strtolower($method);
+
+        if($method == 'get')
+        {
+            if(is_array($keys))
+            {
+                return self::keysExists($_GET, $keys);
+            }
+            else{
+                if(is_null(self::get($keys)))
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+        elseif($method == 'post')
+        {
+            if(is_array($keys))
+            {
+                return self::keysExists($_POST, $keys);
+            }
+            else{
+                if(is_null(self::post($keys)))
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static function keysExists(array $method ,array $keys): bool
+    {
+        foreach($keys as $key)
+        {
+            if(!in_array($key,array_keys($method)))
+            {
+                return false;
+            }
+            return true;
+        }
+    }
 }
