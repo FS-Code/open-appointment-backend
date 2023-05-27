@@ -10,7 +10,7 @@ class App
         Env::init();
 
         //initializes database connection
-        DB::init();
+//        DB::init();
 
         //
         Router::resolve();

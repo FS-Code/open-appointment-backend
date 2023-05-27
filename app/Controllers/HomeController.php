@@ -2,11 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Helpers\DateTime;
+
 class HomeController
 {
     public static function index(): string
     {
-        return 'I\'m an index function!';
+        return DateTime::timeToReadable(60*60*24*3);
+//        return 'I\'m an index function!';
     }
 
     public static function test(): string
