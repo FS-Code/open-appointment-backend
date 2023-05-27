@@ -18,6 +18,8 @@ class DateTime {
 
     private static function execute() : string
     {
+        self::$result = []; // XƏTA: demək, əgər burda resultu boşaltmasam əvvəlki vaxtları yenidən qaytarır
+        
         foreach (self::getOptions() as $op){
             self::time($op);
         }
