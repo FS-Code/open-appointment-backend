@@ -60,4 +60,55 @@ class Request
     {
         return '';
     }
+    
+    public static function get(string $key, $default = null): string|null
+    {
+        if (!isset($_GET[$key])) {
+            return $default;
+        }
+
+        return filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+    }
+
+    public static function post(string $key, $default = null): string|null
+    {
+        if (!isset($_POST[$key])) {
+            return $default;
+        }
+
+        return filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+    }
+
+    public static function cookie(string $key, $default = null): string|null
+    {
+        if (!isset($_COOKIE[$key])) {
+            return $default;
+        }
+
+        // cookie input is not supported by filter_input, using filter_var instead
+        return filter_var($_COOKIE[$key], FILTER_SANITIZE_SPECIAL_CHARS);
+    }
+
+    public static function has(string $type, $key): bool
+    {
+        $type = strtoupper($type);
+
+        if (!in_array($type, ['GET', 'POST'])) {
+            return false;
+        }
+
+        $global = ($type === 'GET') ? $_GET : $_POST;
+
+        if (is_array($key)) {
+            foreach ($key as $k) {
+                if (!isset($global[$k])) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return isset($global[$key]);
+    }
 }
