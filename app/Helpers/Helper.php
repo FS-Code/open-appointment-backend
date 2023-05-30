@@ -17,7 +17,7 @@ class Helper
 		}
 
 		if ( $duration < 60 ) {
-			$result = 'The time is lower than a minute';
+			$result = '< 1 min';
 		} else {
 			$days    = floor( $duration / 86400 );
 			$hours   = floor( ( $duration - $days * 86400 ) / 3600 );
@@ -27,11 +27,11 @@ class Helper
 			$hours   = ( $hours == 0 ? '' : $hours . ( $hours > 1 ? 'hrs ' : 'hr ' ) );
 			$minutes = ( $minutes == 0 ? '' : $minutes . ( $minutes > 1 ? 'mins' : 'min' ) );
 
-			if ( $days != 0 )
+			if ( !empty( $days ) )
 			{
 				$result = $days . $hours . $minutes;
 			}
-			else if ( $hours != 0 )
+			else if ( !empty( $hours ) )
 			{
 				$result = $hours . $minutes;
 			}
@@ -42,6 +42,6 @@ class Helper
 		}
 
 
-		return $result;
+		return trim( $result );
 	}
 }
