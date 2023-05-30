@@ -63,31 +63,29 @@ class Request
 
     public static function get(string $key , $default = null ): string|null
     {
-        if(isset($_GET[$key]))
+        if(!isset($_GET[$key]) || trim( $_GET[$key] ) === "")
         {
-            return filter_var($_GET[$key], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            return $default;
         }      
-        return $default;
-        
+        return $_GET[$key];
     }
 
     public static function post(string $key, $default = null ): string|null
     {
-        if(isset($_POST[$key]))
+        if(!isset($_POST[$key]) || trim( $_POST[$key] ) === "")
         {
-            return filter_var($_POST[$key], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            return $default;
         }
-        return $default;
+        return $_POST[$key];
     }
 
     public static function cookie(string $key, $default = null ): string|null
     {
-        if(isset($_COOKIE[$key]))
+        if(!isset($_COOKIE[$key]) || trim( $_COOKIE[$key] ) === "")
         {
-            
-            return filter_var($_COOKIE[$key], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            return $default;
         } 
-        return $default;
+        return $_COOKIE[$key];
     }
 
     public static function has(string $method, string|array $keys): bool
@@ -100,11 +98,9 @@ class Request
             {
                 return self::keysExists($_GET, $keys);
             }
-            else{
-                if(is_null(self::get($keys)))
-                {
+            elseif(is_null(self::get($keys)))
+            {
                     return false;
-                }
                 return true;
             }
         }
@@ -114,11 +110,10 @@ class Request
             {
                 return self::keysExists($_POST, $keys);
             }
-            else{
-                if(is_null(self::post($keys)))
-                {
+            elseif(is_null(self::post($keys)))
+            {
                     return false;
-                }
+                
                 return true;
             }
         }
