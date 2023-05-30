@@ -63,17 +63,17 @@ class Request
 
     public static function get(string $key, $default = null): ?string
     {
-        return isset($_GET[$key]) ? filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS) : $default;
+        return (isset($_GET[$key]) && trim($_GET[$key]) !== "") ? $_GET[$key] : $default;
     }
 
     public static function post(string $key, $default = null): ?string
     {
-        return isset($_POST[$key]) ? filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS) : $default;
+        return (isset($_POST[$key]) && trim($_POST[$key]) !== "") ? $_POST[$key] : $default;
     }
 
     public static function cookie(string $key, $default = null): ?string
     {
-        return isset($_COOKIE[$key]) ? filter_var($_COOKIE[$key], FILTER_SANITIZE_SPECIAL_CHARS) : $default;
+        return (isset($_COOKIE[$key]) && trim($_COOKIE[$key]) !== "") ? $_COOKIE[$key] : $default;
     }
 
     public static function has(string $type, $keys): bool
@@ -83,11 +83,7 @@ class Request
         }
 
         foreach ($keys as $key) {
-            if ($type == 'GET' && self::get($key) === null) {
-                return false;
-            }
-
-            if ($type == 'POST' && self::post($key) === null) {
+            if ( self::$type($key) === null ) {
                 return false;
             }
         }
