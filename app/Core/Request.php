@@ -94,28 +94,11 @@ class Request
 
         if($method == 'get')
         {
-            if(is_array($keys))
-            {
-                return self::keysExists($_GET, $keys);
-            }
-            elseif(is_null(self::get($keys)))
-            {
-                    return false;
-                return true;
-            }
+            return self::checkMethod($_GET,$keys);
         }
         elseif($method == 'post')
         {
-            if(is_array($keys))
-            {
-                return self::keysExists($_POST, $keys);
-            }
-            elseif(is_null(self::post($keys)))
-            {
-                    return false;
-                
-                return true;
-            }
+            return self::checkMethod($_POST,$keys);
         }
         return false;
     }
@@ -128,6 +111,19 @@ class Request
             {
                 return false;
             }
+            return true;
+        }
+    }
+
+    public static function  checkMethod($method,$keys)
+    {
+        if(is_array($keys))
+        {
+            return self::keysExists($method, $keys);
+        }
+        elseif(is_null(self::get($keys)))
+        {
+                return false;
             return true;
         }
     }
