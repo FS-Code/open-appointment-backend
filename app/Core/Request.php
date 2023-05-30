@@ -60,4 +60,34 @@ class Request
     {
         return '';
     }
+
+    public static function get(string $key, $default = null): ?string
+    {
+        return (isset($_GET[$key]) && trim($_GET[$key]) !== "") ? $_GET[$key] : $default;
+    }
+
+    public static function post(string $key, $default = null): ?string
+    {
+        return (isset($_POST[$key]) && trim($_POST[$key]) !== "") ? $_POST[$key] : $default;
+    }
+
+    public static function cookie(string $key, $default = null): ?string
+    {
+        return (isset($_COOKIE[$key]) && trim($_COOKIE[$key]) !== "") ? $_COOKIE[$key] : $default;
+    }
+
+    public static function has(string $type, $keys): bool
+    {
+        if (!is_array($keys)) {
+            $keys = [$keys];
+        }
+
+        foreach ($keys as $key) {
+            if ( self::$type($key) === null ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
