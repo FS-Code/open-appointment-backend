@@ -1,33 +1,32 @@
 <?php
-
 function secondsToHumanReadable(int $duration): string
 {
-    $hours = floor($duration / 3600);
+    $days = floor($duration / (24 * 3600));
+    $hours = floor(($duration % (24 * 3600)) / 3600);
     $minutes = floor(($duration % 3600) / 60);
-    $seconds = $duration % 60;
+     
 
+    // Burada max day min minute olaraq deyisdirdim
     $output = '';
+     
+    if ($days > 0) {
+        $output .= $days . ' day ';
+    }
 
     if ($hours > 0) {
-        $output .= $hours . 'hr';
+        $output .= $hours . ' hrs ';
     }
+    /*
+     Burda deyirsiz 2hr yerine 2hrs olmalidi, tam olaraq burani basa dusmedim.
+    */
 
-    if ($minutes > 0) {
-        if ($output !== '') {
-            $output .= ' ';
-        }
-        $output .= $minutes . 'min';
-    }
-
-    if ($seconds > 0 || $output === '') {
-        if ($output !== '') {
-            $output .= ' ';
-        }
-        $output .= $seconds . 'sec';
+    if ($minutes > 0 || $output === '') {
+        $output .= $minutes . ' min';
     }
 
     return $output;
 }
 
-echo secondsToHumanReadable(3779);  // * Cavab 1 saat 2 deq 59 san cixacaq
+echo secondsToHumanReadable(166688);
 ?>
+
