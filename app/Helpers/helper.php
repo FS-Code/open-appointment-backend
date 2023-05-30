@@ -29,9 +29,6 @@ class Helper {
  echo Helper::secondsToHumanReadable(3600);
  echo Helper::secondsToHumanReadable(1800);
  echo Helper::secondsToHumanReadable(5400);
-echo Helper::secondsToHumanReadable(7200);
-<<<<<<< HEAD
+ echo Helper::secondsToHumanReadable(7200);
+
 ?>
-=======
-?>
->>>>>>> dev/Cavidan/seconds-to-human
