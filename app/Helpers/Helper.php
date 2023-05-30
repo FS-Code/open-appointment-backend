@@ -17,7 +17,15 @@ class Helper {
 
         if ($toDays > 0) {
 
-            $time .= $toDays . "d";
+            if ($toDays == 1) {
+
+                $time .= $toDays . "d";
+
+            } else {
+
+                $time .= $toDays . "days";
+
+            }
 
         }
 
@@ -31,7 +39,15 @@ class Helper {
 
             }
 
-            $time .= $toHours . "hr";
+            if ($toHours == 1) {
+
+                $time .= $toHours . "hr";
+
+            } else {
+
+                $time .= $toHours . "hrs";
+
+            }
 
         }
 
@@ -45,7 +61,15 @@ class Helper {
 
             }
 
-            $time .= $toMinutes . "min";
+            if ($toMinutes == 1) {
+
+                $time .= $toMinutes . "min";
+
+            } else {
+
+                $time .= $toMinutes . "mins";
+
+            }
 
         }
 
@@ -53,11 +77,11 @@ class Helper {
 
         if ($time == "") {
 
-            echo "No time is left..";
+            echo "0min";
 
         }
 
-        return $time . "\n";
+        return $time;
 
     }
 
