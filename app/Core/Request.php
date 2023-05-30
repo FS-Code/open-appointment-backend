@@ -61,26 +61,11 @@ class Request
         return '';
     }
 
-    private static function sanitize($input){
-
-        $input = trim($input);
-        
-        $input = preg_replace('/\s+/', ' ', $input);
-        
-        $input = strip_tags($input);
-        
-        $input = preg_replace('/[^a-zA-Z0-9\s]/', '', $input);
-        
-        $input = strtolower($input);
-        
-        return $input;
-    }
-
     public static function get(string $key, $default = null): ?string {
 
-        if (isset($_GET[$key])) {
+        if (isset($_GET[$key]) && trim($_GET[$key])) {
 
-            return self::sanitize($_GET[$key]);
+            return $_GET[$key];
 
         }
         
@@ -89,9 +74,9 @@ class Request
 
     public static function post(string $key, $default = null): ?string {
 
-        if (isset($_POST[$key])) {
+        if (isset($_POST[$key])  && trim($_GET[$key])) {
 
-            return self::sanitize($_POST[$key]);
+            return $_POST[$key];
 
         }
         
@@ -100,9 +85,9 @@ class Request
 
     public static function cookie(string $key, $default = null): ?string {
 
-        if (isset($_COOKIE[$key])) {
+        if (isset($_COOKIE[$key]) && trim($_COOKIE[$key])) {
 
-            return self::sanitize($_COOKIE[$key]);
+            return $_COOKIE[$key];
 
         }
         
