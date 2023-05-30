@@ -63,50 +63,42 @@ class Request
 
     public static function get(string $key, $default = null): ?string
     {
-        return isset($_GET[$key]) ? filter_var($_GET[$key], FILTER_SANITIZE_SPECIAL_CHARS) : $default;
+        if (!isset($_GET[$key]) || trim($_GET[$key]) === "") {
+            return $default;
+        }
+        return $_GET[$key];
     }
 
     public static function post(string $key, $default = null): ?string
     {
-        return isset($_POST[$key]) ? filter_var($_POST[$key], FILTER_SANITIZE_SPECIAL_CHARS) : $default;
+        if (!isset($_POST[$key]) || trim($_POST[$key]) === "") {
+            return $default;
+        }
+        return $_POST[$key];
     }
 
     public static function cookie(string $key, $default = null): ?string
     {
-        return isset($_COOKIE[$key]) ? filter_var($_COOKIE[$key], FILTER_SANITIZE_SPECIAL_CHARS) : $default;
-    }
-
-    public static function has(string $type, $key): bool
-    {
-        switch ($type) {
-            case 'GET':
-                return is_array($key) ? self::hasGetKeys($key) : isset($_GET[$key]);
-            case 'POST':
-                return is_array($key) ? self::hasPostKeys($key) : isset($_POST[$key]);
-            default:
-                return false;
+        if (!isset($_COOKIE[$key]) || trim($_COOKIE[$key]) === "") {
+            return $default;
         }
+        return $_COOKIE[$key];
     }
 
-    private static function hasGetKeys(array $keys): bool
+    public static function has(string $method, string|array $key): bool
     {
-        foreach ($keys as $key) {
-            if (!isset($_GET[$key])) {
-                return false;
+        $data = ($method === 'GET') ? $_GET : $_POST;
+        
+        if (is_array($key)) {
+            foreach ($key as $k) {
+                if (!isset($data[$k])) {
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
+        
+        return isset($data[$key]);
     }
-
-    private static function hasPostKeys(array $keys): bool
-    {
-        foreach ($keys as $key) {
-            if (!isset($_POST[$key])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 
 }
