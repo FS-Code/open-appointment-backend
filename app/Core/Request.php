@@ -63,17 +63,33 @@ class Request
 
     public static function get(string $key, $default = null): ?string
     {
-        return $_GET[$key] ?? $default;
+        //$value = $_GET[$key] ?? $default;
+
+        //return ($value !== '') ? $value : $default;
+
+        return isset($_GET[$key]) ? filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS) : $default;
     }
 
     public static function post(string $key, $default = null): ?string
     {
-        return $_POST[$key] ?? $default;
+        //$value = $_POST[$key] ?? $default;
+
+        //return ($value !== '') ? $value : $default;
+
+        return isset($_POST[$key]) ? filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS) : $default;
+
+
+
     }
 
     public static function cookie(string $key, $default = null): ?string
     {
-        return $_COOKIE[$key] ?? $default;
+        //$value = $_COOKIE[$key] ?? $default;
+
+        //return ($value !== '') ? $value : $default;
+
+        return isset($_COOKIE[$key]) ? filter_var($_COOKIE[$key], FILTER_SANITIZE_SPECIAL_CHARS) : $default;
+
     }
 
     public static function has(string $type, $keys): bool
