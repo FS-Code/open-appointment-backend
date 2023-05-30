@@ -10,19 +10,24 @@ class DateFormatHelper {
      */
     public static function secondsToHumanReadable(int $duration): string
     {
-        $hours = floor($duration / 3600);
+        $days = floor($duration / (24 * 3600)); 
+        $hours = floor($duration / (3600 * 60));
         $minutes = floor(($duration % 3600) / 60);
         // $seconds = $duration % 60;
         
         $output = '';
+
         
-        if ($hours > 1) {
-            $output .= $hours . " " . 'hrs';
-        
-        }else{
-            $output .= $hours . " " . 'hr';
+
+        if ($days > 0) {
+            $output .= $days . ($days > 1 ? ' days ' : ' day ');
         }
-   
+
+        if ($hours > 0) {
+            $output .= $hours . ($hours > 1 ? ' hrs ' : ' hr ');
+        }
+
+    
         
         if ($minutes > 0) {
             if ($output !== '') {
