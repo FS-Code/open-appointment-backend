@@ -61,17 +61,17 @@ class Request
         return '';
     }
 
-    public static function get(string $key , $default = null ): string|null
+    public static function get(string $key , $default = null ):  ?string
     {
         return (!isset($_GET[$key]) || trim( $_GET[$key] ) === "" )? $default :  $_GET[$key];
     }
 
-    public static function post(string $key, $default = null ): string|null
+    public static function post(string $key, $default = null ): ?string
     {
         return (!isset($_POST[$key]) || trim( $_POST[$key] ) === "" )? $default :  $_POST[$key];
     }
 
-    public static function cookie(string $key, $default = null ): string|null
+    public static function cookie(string $key, $default = null ): ?string
     {
         return (!isset($_COOKIE[$key]) || trim( $_COOKIE[$key] ) === "" )? $default :  $_COOKIE[$key];
     }
