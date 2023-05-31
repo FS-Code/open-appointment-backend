@@ -63,29 +63,17 @@ class Request
 
     public static function get(string $key , $default = null ): string|null
     {
-        if(!isset($_GET[$key]) || trim( $_GET[$key] ) === "")
-        {
-            return $default;
-        }      
-        return $_GET[$key];
+        return (!isset($_GET[$key]) || trim( $_GET[$key] ) === "" )? $default :  $_GET[$key];
     }
 
     public static function post(string $key, $default = null ): string|null
     {
-        if(!isset($_POST[$key]) || trim( $_POST[$key] ) === "")
-        {
-            return $default;
-        }
-        return $_POST[$key];
+        return (!isset($_POST[$key]) || trim( $_POST[$key] ) === "" )? $default :  $_POST[$key];
     }
 
     public static function cookie(string $key, $default = null ): string|null
     {
-        if(!isset($_COOKIE[$key]) || trim( $_COOKIE[$key] ) === "")
-        {
-            return $default;
-        } 
-        return $_COOKIE[$key];
+        return (!isset($_COOKIE[$key]) || trim( $_COOKIE[$key] ) === "" )? $default :  $_COOKIE[$key];
     }
 
     public static function has(string $method, string|array $keys): bool
@@ -107,11 +95,7 @@ class Request
     {
         foreach($keys as $key)
         {
-            if(!in_array($key,array_keys($method)))
-            {
-                return false;
-            }
-            return true;
+            return !in_array($key,array_keys($method)) ?  false :  true;
         }
     }
 
@@ -124,7 +108,7 @@ class Request
         elseif(is_null(self::get($keys)))
         {
                 return false;
-            return true;
         }
+        return true;
     }
 }
