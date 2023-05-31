@@ -16,7 +16,7 @@ class BusinessHours extends Model {
     const SATURDAY = 'saturday';
     const SUNDAY = 'sunday';
 
-    private int | null $id;
+    private int $id;
     private int | null $mondayId;
     private int | null $tuesdayId;
     private int | null $wednesdayId;
