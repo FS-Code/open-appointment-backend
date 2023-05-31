@@ -14,19 +14,17 @@ class Helper {
     
         $result = '';
         if ($days > 0) {
-            $result .= $days . ($days % 2 == 1 ? 'd ' : 'days ');
+            $result .= $days . ($days == 1 ? 'd ' : 'days ');
         }
         if ($hours > 0) {
-            $result .= $hours . ($hours %2== 1 ? 'hr ' : 'hrs ');
+            $result .= $hours . ($hours == 1 ? 'hr ' : 'hrs ');
         }
         if ($minutes > 0) {
-            $result .= $minutes . ($minutes%2==1 ? 'min' : 'mins');
+            $result .= $minutes . ($minutes == 1 ? 'min' : 'mins');
         }
     
         return trim($result);
     }
 }
-
-
 
 ?>
