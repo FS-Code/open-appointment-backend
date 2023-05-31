@@ -60,7 +60,7 @@ class Request
     {
         return '';
     }
-    
+
     public static function get(string $key, $default = null): ?string
     {
         return (isset($_GET[$key]) && trim($_GET[$key]) !== "") ? $_GET[$key] : $default;
@@ -75,7 +75,6 @@ class Request
     {
         return (isset($_COOKIE[$key]) && trim($_COOKIE[$key]) !== "") ? $_COOKIE[$key] : $default;
     }
-
 
     public static function has(string $type, $key): bool
     {
