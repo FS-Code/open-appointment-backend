@@ -76,18 +76,26 @@ class Request
         return (isset($_COOKIE[$key]) && trim($_COOKIE[$key]) !== "") ? $_COOKIE[$key] : $default;
     }
 
-    public static function has(string $type, $keys): bool
+    public static function has(string $type, $key): bool
     {
-        if (!is_array($keys)) {
-            $keys = [$keys];
+        $type = strtoupper($type);
+
+        if (!in_array($type, ['GET', 'POST'])) {
+            return false;
         }
 
-        foreach ($keys as $key) {
-            if ( self::$type($key) === null ) {
-                return false;
+        $global = ($type === 'GET') ? $_GET : $_POST;
+
+        if (is_array($key)) {
+            foreach ($key as $k) {
+                if (!isset($global[$k])) {
+                    return false;
+                }
             }
+
+            return true;
         }
 
-        return true;
+        return isset($global[$key]);
     }
 }
