@@ -16,14 +16,14 @@ class BusinessHours extends Model {
     const SATURDAY = 'saturday';
     const SUNDAY = 'sunday';
 
-    private int $id;
-    private int $mondayId;
-    private int $tuesdayId;
-    private int $wednesdayId;
-    private int $thursdayId;
-    private int $fridayId;
-    private int $saturdayId;
-    private int $sundayId;
+    private int | null $id;
+    private int | null $mondayId;
+    private int | null $tuesdayId;
+    private int | null $wednesdayId;
+    private int | null $thursdayId;
+    private int | null $fridayId;
+    private int | null $saturdayId;
+    private int | null $sundayId;
 
     public static function create(int | null $mondayId,
                                   int | null $tuesdayId,
@@ -107,31 +107,31 @@ class BusinessHours extends Model {
     {
         return $this->id;
     }
-    public function getMondayId(): int
+    public function getMondayId(): int | null
     {
         return $this->mondayId;
     }
-    public function getTuesdayId(): int
+    public function getTuesdayId(): int | null
     {
         return $this->tuesdayId;
     }
-    public function getWednesdayId(): int
+    public function getWednesdayId(): int | null
     {
         return $this->wednesdayId;
     }
-    public function getThursdayId(): int
+    public function getThursdayId(): int | null
     {
         return $this->thursdayId;
     }
-    public function getFridayId(): int
+    public function getFridayId(): int | null
     {
         return $this->fridayId;
     }
-    public function getSaturdayId(): int
+    public function getSaturdayId(): int | null
     {
         return $this->saturdayId;
     }
-    public function getSundayId(): int
+    public function getSundayId(): int | null
     {
         return $this->sundayId;
     }
