@@ -17,21 +17,21 @@ class BusinessHours extends Model {
     const SUNDAY = 'sunday';
 
     private int $id;
-    private int | null $mondayId;
-    private int | null $tuesdayId;
-    private int | null $wednesdayId;
-    private int | null $thursdayId;
-    private int | null $fridayId;
-    private int | null $saturdayId;
-    private int | null $sundayId;
+    private ?int $mondayId;
+    private ?int $tuesdayId;
+    private ?int $wednesdayId;
+    private ?int $thursdayId;
+    private ?int $fridayId;
+    private ?int $saturdayId;
+    private ?int $sundayId;
 
-    public static function create(int | null $mondayId,
-                                  int | null $tuesdayId,
-                                  int | null $wednesdayId,
-                                  int | null $thursdayId,
-                                  int | null $fridayId,
-                                  int | null $saturdayId,
-                                  int | null $sundayId): self
+    public static function create(?int $mondayId,
+                                  ?int $tuesdayId,
+                                  ?int $wednesdayId,
+                                  ?int $thursdayId,
+                                  ?int $fridayId,
+                                  ?int $saturdayId,
+                                  ?int $sundayId): self
     {
         $businessHours = new BusinessHours();
         $businessHours->setMondayId($mondayId);
@@ -65,7 +65,7 @@ class BusinessHours extends Model {
         ]));
     }
 
-    private function SQLDayField(int | null $id): array
+    private function SQLDayField(?int $id): array
     {
         return [ $id, $id ? PDO::PARAM_INT : PDO::PARAM_NULL ];
     }
@@ -74,31 +74,31 @@ class BusinessHours extends Model {
     {
         $this->id = $id;
     }
-    public function setMondayId(int | null $id): void
+    public function setMondayId(?int $id): void
     {
         $this->mondayId = $id;
     }
-    public function setTuesdayId(int | null $id): void
+    public function setTuesdayId(?int $id): void
     {
         $this->tuesdayId = $id;
     }
-    public function setWednesdayId(int | null $id): void
+    public function setWednesdayId(?int $id): void
     {
         $this->wednesdayId = $id;
     }
-    public function setThursdayId(int | null $id): void
+    public function setThursdayId(?int $id): void
     {
         $this->thursdayId = $id;
     }
-    public function setFridayId(int | null $id): void
+    public function setFridayId(?int $id): void
     {
         $this->fridayId = $id;
     }
-    public function setSaturdayId(int | null $id): void
+    public function setSaturdayId(?int $id): void
     {
         $this->saturdayId = $id;
     }
-    public function setSundayId(int | null $id): void
+    public function setSundayId(?int $id): void
     {
         $this->sundayId = $id;
     }
@@ -107,31 +107,31 @@ class BusinessHours extends Model {
     {
         return $this->id;
     }
-    public function getMondayId(): int | null
+    public function getMondayId(): ?int
     {
         return $this->mondayId;
     }
-    public function getTuesdayId(): int | null
+    public function getTuesdayId(): ?int
     {
         return $this->tuesdayId;
     }
-    public function getWednesdayId(): int | null
+    public function getWednesdayId(): ?int
     {
         return $this->wednesdayId;
     }
-    public function getThursdayId(): int | null
+    public function getThursdayId(): ?int
     {
         return $this->thursdayId;
     }
-    public function getFridayId(): int | null
+    public function getFridayId(): ?int
     {
         return $this->fridayId;
     }
-    public function getSaturdayId(): int | null
+    public function getSaturdayId(): ?int
     {
         return $this->saturdayId;
     }
-    public function getSundayId(): int | null
+    public function getSundayId(): ?int
     {
         return $this->sundayId;
     }
