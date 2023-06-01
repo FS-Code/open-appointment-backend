@@ -11,7 +11,7 @@ class User extends Model
     public static function createUser(string $email, string $password): int
     {
         // Check if user with given email already exists
-        $existingUser = self::where('email', $email)->first();
+        $existingUser = self::getUserByEmail($email);
         if ($existingUser) {
             throw new \Exception('This user already exists.');
         }
@@ -32,6 +32,19 @@ class User extends Model
         } catch (PDOException $e) {
             throw new \Exception('Failed to create user: ' . $e->getMessage());
         }
+    }
+
+    public static function getUserByEmail(string $email)
+    {
+        $query = "SELECT * FROM users WHERE email = :email LIMIT 1";
+        $params = [
+            'email' => $email,
+        ];
+        $connection = DB::DB(); // Get the existing PDO connection
+        $stmt = $connection->prepare($query);
+        $stmt->execute($params);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
 
