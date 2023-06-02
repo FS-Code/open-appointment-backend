@@ -61,54 +61,41 @@ class Request
         return '';
     }
 
-    public static function get(string $key, $default = null): ?string {
-
-        if (isset($_GET[$key]) && trim($_GET[$key])) {
-
-            return $_GET[$key];
-
-        }
-        
-        return $default;
+    public static function get(string $key, $default = null): ?string
+    {
+        return (isset($_GET[$key]) && trim($_GET[$key]) !== "") ? $_GET[$key] : $default;
     }
 
-    public static function post(string $key, $default = null): ?string {
-
-        if (isset($_POST[$key])  && trim($_GET[$key])) {
-
-            return $_POST[$key];
-
-        }
-        
-        return $default;
+    public static function post(string $key, $default = null): ?string
+    {
+        return (isset($_POST[$key]) && trim($_POST[$key]) !== "") ? $_POST[$key] : $default;
     }
 
-    public static function cookie(string $key, $default = null): ?string {
-
-        if (isset($_COOKIE[$key]) && trim($_COOKIE[$key])) {
-
-            return $_COOKIE[$key];
-
-        }
-        
-        return $default;
+    public static function cookie(string $key, $default = null): ?string
+    {
+        return (isset($_COOKIE[$key]) && trim($_COOKIE[$key]) !== "") ? $_COOKIE[$key] : $default;
     }
 
-    function has(string $type ,string|array $key): bool {
+    public static function has(string $type, $key): bool
+    {
+        $type = strtoupper($type);
 
-        $input_variables = $type === "POST" || $type === "post" ? $_POST : $_GET;
+        if (!in_array($type, ['GET', 'POST'])) {
+            return false;
+        }
+
+        $global = ($type === 'GET') ? $_GET : $_POST;
 
         if (is_array($key)) {
-            foreach ($key as $i) {
-                if (!isset($input_variables[$i])) {
+            foreach ($key as $k) {
+                if (!isset($global[$k])) {
                     return false;
                 }
             }
+
             return true;
-        } else {
-            return isset($input_variables[$key]);
         }
+
+        return isset($global[$key]);
     }
-    
-    
 }
