@@ -17,11 +17,14 @@ class User extends Model
         }
 
         try {
+            // Hash the password
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
             // Insert the new user into the database
             $query = "INSERT INTO users (email, password) VALUES (:email, :password)";
             $params = [
                 'email' => $email,
-                'password' => $password,
+                'password' => $hashedPassword,
             ];
             $connection = DB::DB(); // Get the existing PDO connection
             $stmt = $connection->prepare($query);
@@ -47,13 +50,12 @@ class User extends Model
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-
-    public static function add( array $params ):int
+    public static function add(array $params): int
     {
         return 0;
     }
 
-    public static function remove( int $id ):bool
+    public static function remove(int $id): bool
     {
         return true;
     }
