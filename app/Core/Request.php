@@ -10,7 +10,7 @@ class Request
 
     public static function path(): string
     {
-        $path     = $_SERVER[ 'REQUEST_URI' ] ?? '/';
+        $path   = $_SERVER[ 'REQUEST_URI' ] ?? '/';
         $position = strpos( $path, '?' );
 
         if ( $position === false )
@@ -61,41 +61,40 @@ class Request
         return '';
     }
 
-    public static function get(string $key, $default = null): ?string
-    {
-        return (isset($_GET[$key]) && trim($_GET[$key]) !== "") ? $_GET[$key] : $default;
+
+
+    public static function get( string $key, $default = null ): string|null {
+        if(isset($_GET[$key])) {
+            return $default;
+        }  else {
+            return filter_var($_GET[$key], FILTER_SANITIZE_STRING);
+        }  
+    
     }
 
-    public static function post(string $key, $default = null): ?string
-    {
-        return (isset($_POST[$key]) && trim($_POST[$key]) !== "") ? $_POST[$key] : $default;
+    public static function post( string $key, $default = null ): string|null {
+        if(isset($_POST[$key])) {
+            return $default;
+        }  else {
+            return filter_var($_POST[$key], FILTER_SANITIZE_STRING);
+        }  
     }
 
-    public static function cookie(string $key, $default = null): ?string
-    {
-        return (isset($_COOKIE[$key]) && trim($_COOKIE[$key]) !== "") ? $_COOKIE[$key] : $default;
+    public static function cookie( string $key, $default = null ): string|null {
+        if(isset($_COOKIE[$key])) {
+            return $default;
+        }  else {
+            return filter_var($_COOKIE[$key], FILTER_SANITIZE_STRING);
+        }  
     }
 
-    public static function has(string $type, $key): bool
-    {
-        $type = strtoupper($type);
-
-        if (!in_array($type, ['GET', 'POST'])) {
-            return false;
-        }
-
-        $global = ($type === 'GET') ? $_GET : $_POST;
-
-        if (is_array($key)) {
-            foreach ($key as $k) {
-                if (!isset($global[$k])) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        return isset($global[$key]);
+    public static function has( string $method, string|array $key): bool {
+       if($method === 'GET') {
+        return isset($_GET[$key]);
+       } else if($method === 'POST'){
+            return  isset($_POST[$key]);
+       } else {
+         return false;
+       }
     }
 }
