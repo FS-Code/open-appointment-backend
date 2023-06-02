@@ -15,4 +15,36 @@ class User extends Model
     {
         return true;
     }
+
+    /**
+     * @throws \Exception
+     */
+    public static function updateUserPassword(
+        int $id,
+        string $password
+    ):void
+    {
+        //Assuming DB() creates the connection;
+
+        $db = \App\Core\DB::DB();
+
+        //SQL Query;
+
+        $query = "Update user SET password = :password WHERE id = :id";
+
+        $statement = $db->prepare( $query );
+
+        //Binding parameters;
+
+        $statement->bindParam( ':id', $id );
+        $statement->bindParam( ':password', $password);
+
+        $statement->execute();
+
+        //Exception handling;
+
+        if ($statement->rowCount() == 0) {
+            throw new \Exception("User not found!");
+        }
+    }
 }
