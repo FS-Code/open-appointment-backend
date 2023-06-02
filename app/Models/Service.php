@@ -54,20 +54,22 @@ class Service extends Model {
         ]));
     }
 
-    private function insert(): string {
+    private function insert(): string
+    {
         return "INSERT INTO service (name, location, details, duration, business_hours_id, buffer_id)
-        VALUES (:name, :location, :details, :duration, :business_hours_id, :buffer_id)";
+                VALUES (:name, :location, :details, :duration, :business_hours_id, :buffer_id)";
     }
 
-    private function update(): string {
-        $id =  $this->id;
+    private function update(): string
+    {
         return "UPDATE service
                 SET name = :name, location = :location, details = :details, duration = :duration,
                     business_hours_id = :business_hours_id, buffer_id = :buffer_id
-                WHERE id = $id";
+                WHERE id = $this->id";
     }
 
-    private function checkDurationValidity(): void {
+    private function checkDurationValidity(): void
+    {
         if ($this->duration < 60)
             throw new Exception("Duration can't be shorter than a minute");
     }
@@ -76,42 +78,54 @@ class Service extends Model {
     {
         $this->id = $id;
     }
-    public function setName(string $name): void {
+    public function setName(string $name): void
+    {
         $this->name = $name;
     }
-    public function setLocation(string $location): void {
+    public function setLocation(string $location): void
+    {
         $this->location = $location;
     }
-    public function setDetails(string $details): void {
+    public function setDetails(string $details): void
+    {
         $this->details = $details;
     }
-    public function setDuration(int $duration): void {
+    public function setDuration(int $duration): void
+    {
         $this->duration = $duration;
         $this->checkDurationValidity();
     }
-    public function setBusinessHoursId(int $businessHoursId): void {
+    public function setBusinessHoursId(int $businessHoursId): void
+    {
         $this->businessHoursId = $businessHoursId;
     }
-    public function setBufferId(int $bufferId): void {
+    public function setBufferId(int $bufferId): void
+    {
         $this->bufferId = $bufferId;
     }
 
-    public function getName(): string {
+    public function getName(): string
+    {
         return $this->name;
     }
-    public function getLocation(): string {
+    public function getLocation(): string
+    {
         return $this->location;
     }
-    public function getDetails(): string {
+    public function getDetails(): string
+    {
         return $this->details;
     }
-    public function getDuration(): int {
+    public function getDuration(): int
+    {
         return $this->duration;
     }
-    public function getBusinessHoursId(): int {
+    public function getBusinessHoursId(): int
+    {
         return $this->businessHoursId;
     }
-    public function getBufferId(): int {
+    public function getBufferId(): int
+    {
         return $this->bufferId;
     }
 

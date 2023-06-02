@@ -26,8 +26,12 @@ class Buffer extends Model {
     {
         $this->checkTimeValidity();
 
-        $sql = "INSERT INTO buffer (before_time, after_time)
-                VALUES (:before_time, :after_time)";
+        $sql = '';
+
+        if ( !isset($this->id) )
+            $sql = $this->insert();
+        else
+            $sql = $this->update();
 
         $this->setId(DB::exeSQL($sql, [
             'before_time' => [ $this->beforeTime, PDO::PARAM_INT ],
@@ -35,7 +39,21 @@ class Buffer extends Model {
         ]));
     }
 
-    private function checkTimeValidity() {
+    private function insert(): string
+    {
+        return "INSERT INTO buffer (before_time, after_time)
+                VALUES (:before_time, :after_time)";
+    }
+
+    private function update(): string
+    {
+        return "UPDATE buffer
+                SET before_time = :before_time, after_time = :after_time
+                WHERE id = $this->id";
+    }
+
+    private function checkTimeValidity()
+    {
         if($this->beforeTime < 0 || $this->afterTime < 0)
             throw new Exception("\$beforeTime and \$afterTime can't be negative");
     }

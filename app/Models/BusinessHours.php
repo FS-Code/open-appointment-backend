@@ -48,11 +48,12 @@ class BusinessHours extends Model {
 
     public function save(): void
     {
-        $sql = sprintf("INSERT INTO business_hours (%s, %s, %s, %s, %s, %s, %s)
-                        VALUES (:%s, :%s, :%s, :%s, :%s, :%s, :%s)",
+        $sql = '';
 
-        self::MONDAY, self::TUESDAY, self::WEDNESDAY, self::THURSDAY, self::FRIDAY, self::SATURDAY, self::SUNDAY,
-        self::MONDAY, self::TUESDAY, self::WEDNESDAY, self::THURSDAY, self::FRIDAY, self::SATURDAY, self::SUNDAY);
+        if ( !isset($this->id) )
+            $sql = $this->insert();
+        else
+            $sql = $this->update();
 
         $this->setId(DB::exeSQL($sql, [
             self::MONDAY    => $this->SQLDayField($this->getMondayId()),
@@ -63,6 +64,25 @@ class BusinessHours extends Model {
             self::SATURDAY  => $this->SQLDayField($this->getSaturdayId()),
             self::SUNDAY    => $this->SQLDayField($this->getSundayId())
         ]));
+    }
+
+    private function insert(): string
+    {
+        return sprintf(
+            "INSERT INTO business_hours (%s, %s, %s, %s, %s, %s, %s)
+             VALUES (:%s, :%s, :%s, :%s, :%s, :%s, :%s)",
+                self::MONDAY, self::TUESDAY, self::WEDNESDAY, self::THURSDAY, self::FRIDAY, self::SATURDAY, self::SUNDAY,
+                self::MONDAY, self::TUESDAY, self::WEDNESDAY, self::THURSDAY, self::FRIDAY, self::SATURDAY, self::SUNDAY);
+    }
+
+    private function update(): string
+    {
+        return sprintf(
+            "UPDATE business_hours 
+             SET %s = :%s, %s = :%s, %s = :%s, %s = :%s, %s = :%s, %s = :%s, %s = :%s)
+             WHERE id = $this->id",
+                self::MONDAY, self::TUESDAY, self::WEDNESDAY, self::THURSDAY, self::FRIDAY, self::SATURDAY, self::SUNDAY,
+                self::MONDAY, self::TUESDAY, self::WEDNESDAY, self::THURSDAY, self::FRIDAY, self::SATURDAY, self::SUNDAY);
     }
 
     private function SQLDayField(?int $id): array

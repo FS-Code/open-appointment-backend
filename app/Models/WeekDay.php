@@ -26,13 +26,30 @@ class WeekDay extends Model {
     {
         $this->checkTimeValidity();
 
-        $sql = "INSERT INTO week_day (start_time, end_time)
-                VALUES (:start_time, :end_time)";
+        $sql = '';
+
+        if ( !isset($this->id) )
+            $sql = $this->insert();
+        else
+            $sql = $this->update();
     
         $this->setId(DB::exeSQL($sql, [
             'start_time' => [ $this->startTime, PDO::PARAM_STR ],
             'end_time'   => [ $this->endTime,   PDO::PARAM_STR ]
         ]));
+    }
+
+    private function insert(): string
+    {
+        return "INSERT INTO week_day (start_time, end_time)
+                VALUES (:start_time, :end_time)";
+    }
+
+    private function update(): string
+    {
+        return "UPDATE week_day
+                SET start_time = :start_time, end_time = :end_time
+                WHERE id = $this->id";
     }
 
     private function checkTimeValidity(): void
