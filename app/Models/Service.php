@@ -37,35 +37,37 @@ class Service extends Model {
 
     public function save(): void
     {
-        $sql = '';
-
-        if ( !isset($this->id) )
-            $sql = $this->insert();
-        else
-            $sql = $this->update();
-
-        $this->setId(DB::exeSQL($sql, [
+        $val = [
             'name'              => [ $this->getName(),            PDO::PARAM_STR ],
             'location'          => [ $this->getLocation(),        PDO::PARAM_STR ],
             'details'           => [ $this->getDetails(),         PDO::PARAM_STR ],
             'duration'          => [ $this->getDuration(),        PDO::PARAM_INT ],
             'business_hours_id' => [ $this->getBusinessHoursId(), PDO::PARAM_INT ],
             'buffer_id'         => [ $this->getBufferId(),        PDO::PARAM_INT ],
-        ]));
+        ];
+
+        if ( !isset($this->id) )
+            $this->insert($val);
+        else
+            $this->update($val);
     }
 
-    private function insert(): string
+    private function insert(array $val): void
     {
-        return "INSERT INTO service (name, location, details, duration, business_hours_id, buffer_id)
+        $sql = "INSERT INTO service (name, location, details, duration, business_hours_id, buffer_id)
                 VALUES (:name, :location, :details, :duration, :business_hours_id, :buffer_id)";
+
+        $this->setId(DB::exeSQL($sql, $val));
     }
 
-    private function update(): string
+    private function update(array $val): void
     {
-        return "UPDATE service
+        $sql = "UPDATE service
                 SET name = :name, location = :location, details = :details, duration = :duration,
                     business_hours_id = :business_hours_id, buffer_id = :buffer_id
                 WHERE id = $this->id";
+
+        DB::exeSQL($sql, $val);
     }
 
     private function checkDurationValidity(): void

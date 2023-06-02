@@ -26,30 +26,33 @@ class Buffer extends Model {
     {
         $this->checkTimeValidity();
 
-        $sql = '';
-
-        if ( !isset($this->id) )
-            $sql = $this->insert();
-        else
-            $sql = $this->update();
-
-        $this->setId(DB::exeSQL($sql, [
+        $val = [
             'before_time' => [ $this->beforeTime, PDO::PARAM_INT ],
             'after_time'  => [ $this->afterTime,  PDO::PARAM_INT ]
-        ]));
+        ];
+
+        if ( !isset($this->id) )
+            $this->insert($val);
+        else
+            $this->update($val);
+
     }
 
-    private function insert(): string
+    private function insert(array $val): void
     {
-        return "INSERT INTO buffer (before_time, after_time)
+        $sql = "INSERT INTO buffer (before_time, after_time)
                 VALUES (:before_time, :after_time)";
+
+        $this->setId(DB::exeSQL($sql, $val));
     }
 
-    private function update(): string
+    private function update(array $val): void
     {
-        return "UPDATE buffer
+        $sql = "UPDATE buffer
                 SET before_time = :before_time, after_time = :after_time
                 WHERE id = $this->id";
+
+        DB::exeSQL($sql, $val);
     }
 
     private function checkTimeValidity()

@@ -48,14 +48,7 @@ class BusinessHours extends Model {
 
     public function save(): void
     {
-        $sql = '';
-
-        if ( !isset($this->id) )
-            $sql = $this->insert();
-        else
-            $sql = $this->update();
-
-        $this->setId(DB::exeSQL($sql, [
+        $val = [
             self::MONDAY    => $this->SQLDayField($this->getMondayId()),
             self::TUESDAY   => $this->SQLDayField($this->getTuesdayId()),
             self::WEDNESDAY => $this->SQLDayField($this->getWednesdayId()),
@@ -63,26 +56,36 @@ class BusinessHours extends Model {
             self::FRIDAY    => $this->SQLDayField($this->getFridayId()),
             self::SATURDAY  => $this->SQLDayField($this->getSaturdayId()),
             self::SUNDAY    => $this->SQLDayField($this->getSundayId())
-        ]));
+        ];
+
+        if ( !isset($this->id) )
+            $this->insert($val);
+        else
+            $this->update($val);
+
     }
 
-    private function insert(): string
+    private function insert(array $val): void
     {
-        return sprintf(
+        $sql = sprintf(
             "INSERT INTO business_hours (%s, %s, %s, %s, %s, %s, %s)
              VALUES (:%s, :%s, :%s, :%s, :%s, :%s, :%s)",
                 self::MONDAY, self::TUESDAY, self::WEDNESDAY, self::THURSDAY, self::FRIDAY, self::SATURDAY, self::SUNDAY,
                 self::MONDAY, self::TUESDAY, self::WEDNESDAY, self::THURSDAY, self::FRIDAY, self::SATURDAY, self::SUNDAY);
+    
+        $this->setId(DB::exeSQL($sql, $val));
     }
 
-    private function update(): string
+    private function update(array $val): void
     {
-        return sprintf(
+        $sql = sprintf(
             "UPDATE business_hours 
-             SET %s = :%s, %s = :%s, %s = :%s, %s = :%s, %s = :%s, %s = :%s, %s = :%s)
+             SET %s = :%s, %s = :%s, %s = :%s, %s = :%s, %s = :%s, %s = :%s, %s = :%s
              WHERE id = $this->id",
-                self::MONDAY, self::TUESDAY, self::WEDNESDAY, self::THURSDAY, self::FRIDAY, self::SATURDAY, self::SUNDAY,
-                self::MONDAY, self::TUESDAY, self::WEDNESDAY, self::THURSDAY, self::FRIDAY, self::SATURDAY, self::SUNDAY);
+                self::MONDAY, self::MONDAY, self::TUESDAY, self::TUESDAY, self::WEDNESDAY, self::WEDNESDAY,
+                self::THURSDAY, self::THURSDAY, self::FRIDAY, self::FRIDAY, self::SATURDAY, self::SATURDAY, self::SUNDAY, self::SUNDAY);
+    
+        DB::exeSQL($sql, $val);
     }
 
     private function SQLDayField(?int $id): array
