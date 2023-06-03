@@ -4,4 +4,5 @@ namespace App\DB;
 
 class Model
 {
+
 }
