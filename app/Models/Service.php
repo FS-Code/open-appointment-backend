@@ -57,7 +57,7 @@ class Service extends Model
         return self::run_sql($sql,$data);
     }
 
-    public static function createWeekdays($start_time,$end_time)
+    public static function createWeekdays($start_time,$end_time): int
     {
         if ($start_time<$end_time){
             $data = [
