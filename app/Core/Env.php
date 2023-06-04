@@ -12,6 +12,8 @@ class Env
         'pass' => ''
     ];
 
+	public static string $secret = '';
+
     public static function init(): void
     {
         $dotenv = Dotenv::createMutable( ROOT );
@@ -22,5 +24,6 @@ class Env
         self::$db[ 'dsn' ]  = $_ENV[ 'DB_DSN' ] ?? '';
         self::$db[ 'user' ] = $_ENV[ 'DB_USER' ] ?? '';
         self::$db[ 'pass' ] = $_ENV[ 'DB_PASS' ] ?? '';
+	    self::$secret = $_ENV[ 'SECRET_KEY' ] ?? '';
     }
 }
