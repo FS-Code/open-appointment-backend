@@ -8,17 +8,13 @@ use PDOException;
 class User extends Model
 {
 
-    public static function createUser(string $email, string $password): int
+    public static function createUser(string $email, string $hashedPassword): int
     {
         // Check if user with given email already exists
         $existingUser = self::getUserByEmail($email);
         if ($existingUser) {
             throw new \Exception('This user already exists.');
         }
-
-        try {
-            // Hash the password
-            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
 
             // Insert the new user into the database
             $query = "INSERT INTO users (email, password) VALUES (:email, :password)";
@@ -32,9 +28,7 @@ class User extends Model
 
             // Return the ID of the newly created user
             return $connection->lastInsertId();
-        } catch (PDOException $e) {
-            throw new \Exception('Failed to create user: ' . $e->getMessage());
-        }
+        
     }
 
     public static function getUserByEmail(string $email)
@@ -48,6 +42,11 @@ class User extends Model
         $stmt->execute($params);
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public static function hashPassword(string $password): string
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
     }
 
     public static function add(array $params): int
