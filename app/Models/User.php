@@ -21,14 +21,15 @@ class User extends Model
 
     public static function getUserByLoginPass(string $email, string $password): object
     {
-        $query = "SELECT * FROM user WHERE email = :email";
+        $query = "SELECT * FROM user WHERE email = :email AND password = :password";
         $stmt = DB::DB()->prepare($query);
         $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $password);
         $stmt->execute();
 
         $user = $stmt->fetch(PDO::FETCH_OBJ);
 
-        if (!$user || $user->password !== $password) {
+        if (!$user) {
             throw new Exception('User not found by given credentials');
         }   
 
