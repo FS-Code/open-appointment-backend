@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\DB\Model;
-use PDOException;
 
 class User extends Model
 {
