@@ -42,4 +42,4 @@ class User extends Model
         }
     }
 }
-?>
+
