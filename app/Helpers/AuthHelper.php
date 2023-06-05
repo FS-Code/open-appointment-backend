@@ -34,17 +34,14 @@ class AuthHelper
 		$base64UrlPayload = self::base64UrlEncode( $data );
 
 		$signature = hash_hmac( "sha256", $base64UrlHeader . "." . $base64UrlPayload, Env::$secret, true );
-
 		$base64UrlSignature = self::base64UrlEncode( $signature );
 
-		$jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
-		
-		if ( ! $jwt )
+		if ( ! $base64UrlHeader || ! $base64UrlPayload || ! $base64UrlSignature )
 		{
 			throw new Exception( "Something went wrong. Jwt token is not created!" );
 		}
 
-		return $jwt;
+		return $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
 	}
 
 	/**
