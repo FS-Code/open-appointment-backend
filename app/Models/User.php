@@ -28,12 +28,12 @@ class User extends Model
         $prepared->execute();
 
         $result = $prepared->fetchObject();
-
-        if ($result) {
-            return $result;
+        
+        if (!$result) {
+            throw new Exception("User not found by given id");
         }
-
-        throw new Exception("User not found by given id");
+        
+        return $result;
     }
 
 
