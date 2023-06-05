@@ -35,10 +35,3 @@ class Telegram
     }
 }
 
-// Usage example:
-try {
-    Telegram::sendMessage('<bot-token>', 123456789, 'Hello!');
-} catch (Exception $e) {
-    // Handle exceptions
-    echo "Error: " . $e->getMessage();
-}
