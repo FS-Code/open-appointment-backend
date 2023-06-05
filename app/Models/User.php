@@ -43,10 +43,10 @@ class User extends Model
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public static function hashPassword(string $password): string
-    {
-        return password_hash($password, PASSWORD_DEFAULT);
-    }
+    // public static function hashPassword(string $password): string
+    // {
+    //     return password_hash($password, PASSWORD_DEFAULT);
+    // }
 
     public static function add(array $params): int
     {
