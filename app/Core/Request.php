@@ -60,4 +60,42 @@ class Request
     {
         return '';
     }
+
+    public static function get(string $key, $default = null): ?string
+    {
+        return (isset($_GET[$key]) && trim($_GET[$key]) !== "") ? $_GET[$key] : $default;
+    }
+
+    public static function post(string $key, $default = null): ?string
+    {
+        return (isset($_POST[$key]) && trim($_POST[$key]) !== "") ? $_POST[$key] : $default;
+    }
+
+    public static function cookie(string $key, $default = null): ?string
+    {
+        return (isset($_COOKIE[$key]) && trim($_COOKIE[$key]) !== "") ? $_COOKIE[$key] : $default;
+    }
+
+    public static function has(string $type, $key): bool
+    {
+        $type = strtoupper($type);
+
+        if (!in_array($type, ['GET', 'POST'])) {
+            return false;
+        }
+
+        $global = ($type === 'GET') ? $_GET : $_POST;
+
+        if (is_array($key)) {
+            foreach ($key as $k) {
+                if (!isset($global[$k])) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return isset($global[$key]);
+    }
 }
