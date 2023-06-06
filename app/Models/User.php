@@ -33,7 +33,7 @@ class User extends Model
 
         //SQL Query;
 
-        $query = "Update user SET password = :password WHERE id = :id";
+        $query = "UPDATE user SET password = :password WHERE id = :id";
 
         $statement = $db->prepare( $query );
 
