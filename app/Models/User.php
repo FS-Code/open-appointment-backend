@@ -9,24 +9,21 @@ use Exception;
 
 class User extends Model
 {
-    public static function createUser(string $email, string $password): int
+    public static function createUser(string $email, string $hashedPassword): int
     {
         // check if user already exists
-        $query = "SELECT * FROM users WHERE email = :email";
+        $query = "SELECT * FROM user WHERE email = :email";
         $stmt = DB::DB()->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_OBJ);
-
+    
         if ($user) {
             throw new Exception('This user is already exists');
         }  
-
-        // Hash the password
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
+    
         // insert user into the database
-        $query = "INSERT INTO users (email, password) VALUES (:email, :password)";
+        $query = "INSERT INTO user (email, password) VALUES (:email, :password)";
         $stmt = DB::DB()->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $hashedPassword);
@@ -34,6 +31,8 @@ class User extends Model
         
         return DB::DB()->lastInsertId();
     }
+    
+    
 
     public static function add( array $params ):int
     {
