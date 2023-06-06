@@ -19,7 +19,7 @@ class Mailer {
             $mail->SMTPAuth = true;
             $mail->Username = 'your-email@example.com'; // Update with your email address
             $mail->Password = 'your-password'; // Update with your email password
-            $mail->SMTPSecure = 'tls'; // TLS encryption, you can use 'ssl' if needed
+            $mail->SMTPSecure = 'tls'; //ssl' if needed
             $mail->Port = 587; // SMTP port, update if needed
 
             // Sender and recipient
