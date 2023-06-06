@@ -20,4 +20,16 @@ class DB
     {
         return self::$pdo;
     }
+
+    public static function exeSQL(string $sql, array $valuesNTypes): int {
+        $stmt = self::$pdo->prepare($sql);
+
+        foreach ($valuesNTypes as $k => $v) {
+            $stmt->bindValue(":$k", $v[0], $v[1]);
+        }
+
+        $stmt->execute();
+
+        return self::$pdo->lastInsertId();
+    }
 }
