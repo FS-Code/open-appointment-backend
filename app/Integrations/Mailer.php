@@ -13,18 +13,17 @@ class Mailer {
         $mail = new PHPMailer(true);
 
         try {
-            // SMTP configuration
             $mail->isSMTP();
-            $mail->Host = 'smtp.example.com'; // Update with your SMTP host
+            $mail->Host = 'smtp.example.com'; 
             $mail->SMTPAuth = true;
-            $mail->Username = 'your-email@example.com'; // Update with your email address
-            $mail->Password = 'your-password'; // Update with your email password
-            $mail->SMTPSecure = 'tls'; //ssl' if needed
-            $mail->Port = 587; // SMTP port, update if needed
+            $mail->Username = 'your-email@example.com'; 
+            $mail->Password = 'your-password'; 
+            $mail->SMTPSecure = 'tls'; 
+            $mail->Port = 587; 
 
             // Sender and recipient
-            $mail->setFrom('your-email@example.com', 'Your Name'); // Update with your email and name
-            $mail->addAddress($to); // Add recipient email address
+            $mail->setFrom('your-email@example.com', 'Your Name'); 
+            $mail->addAddress($to); 
 
             // Email content
             $mail->isHTML(true);
@@ -34,7 +33,6 @@ class Mailer {
             // Send the email
             $mail->send();
         } catch (Exception $e) {
-            // Exception occurred, throw an exception with the error message
             throw new \Exception('Message could not be sent. PHPMailer Error: ' . $e->getMessage());
         }
     }
