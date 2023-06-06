@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\DB\Model;
+use App\Core\DB;
+use PDO;
+use Exception;
 
 use PDO;
 use Exception;
@@ -20,38 +23,54 @@ class User extends Model
         return true;
     }
 
+    /**
+     * @throws \Exception
+     */
+    public static function updateUserPassword(
+        int $id,
+        string $password
+    ):void
+    {
+        //Assuming DB() creates the connection;
 
-    function getUserByLoginPass(string $email, string $password): object {
+        $db = \App\Core\DB::DB();
 
-        $db = DB::DB(); 
-        
-        
-        $sql = "SELECT 
-                     `id`,
-                     `email`,
-                     `password` 
-                 FROM users 
-                 WHERE email = :email
-                 LIMIT 1"; #if email is not unique
+        //SQL Query;
 
-        $query = $db->prepare($sql);
+        $query = "UPDATE user SET password = :password WHERE id = :id";
 
-        $query->bindParam(':email', $email);
+        $statement = $db->prepare( $query );
 
-        $query->execute();
-        
-        if(!$query->rowCount()){
-            throw new Exception('User not found by given credentials');
+        //Binding parameters;
+
+        $statement->bindParam( ':id', $id );
+        $statement->bindParam( ':password', $password);
+
+        $statement->execute();
+
+        //Exception handling;
+
+        if ($statement->rowCount() == 0) {
+            throw new \Exception("User not found!");
         }
+    }
 
-        $user = $query->fetch(PDO::FETCH_OBJ);
-        
-        if (!password_verify($password,$user->password)) {
+    public static function getUserByLoginPass(string $email, string $password): object
+    {
+        $query = "SELECT * FROM user WHERE email = :email AND password = :password";
+        $stmt = DB::DB()->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $password);
+        $stmt->execute();
+
+        $user = $stmt->fetch(PDO::FETCH_OBJ);
+
+        if (!$user) {
             throw new Exception('User not found by given credentials');
-        }        
-        
+        }   
+
         unset($user->password);
-        
+
         return $user;
     }
 }
