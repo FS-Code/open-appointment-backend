@@ -17,14 +17,14 @@ class Mailer
         try {
             $mail->SMTPDebug = SMTP::DEBUG_SERVER;
             $mail->isSMTP();
-            $mail->Host       = $_ENV['SMTP_HOST'];
+            $mail->Host       = Env::$smtp['host'];
             $mail->SMTPAuth   = true;
-            $mail->Username   = $_ENV['SMTP_USERNAME'];
-            $mail->Password   = $_ENV['SMTP_PASSWORD'];
+            $mail->Username   = Env::$smtp['username'];
+            $mail->Password   = Env::$smtp['password'];
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $mail->Port       = $_ENV['SMTP_PORT'];
+            $mail->Port       = Env::$smtp['port'];
 
-            $mail->setFrom($_ENV['FROM_EMAIL'], $_ENV['FROM_NAME']);
+            $mail->setFrom(Env::$smtp['from_email'], Env::$smtp['from_name']);
             $mail->addAddress($to);
 
             $mail->isHTML(true);
