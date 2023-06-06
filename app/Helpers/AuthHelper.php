@@ -38,7 +38,7 @@ class AuthHelper
 
 		if ( ! $base64UrlHeader || ! $base64UrlPayload || ! $base64UrlSignature )
 		{
-			throw new Exception( "Something went wrong. Jwt token is not created!" );
+			throw new Exception( "Something went wrong. JWT is not created!" );
 		}
 
 		return $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
