@@ -8,7 +8,6 @@ use App\Core\DB;
 use App\DB\Model;
 use PDOException;
 
-
 class User extends Model
 {
     public static function add( array $params ):int
@@ -53,4 +52,24 @@ class User extends Model
             echo $e->getMessage();
         }
     }
+
+    public static function getUserByLoginPass(string $email, string $password): object
+    {
+        $query = "SELECT * FROM user WHERE email = :email AND password = :password";
+        $stmt = DB::DB()->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $password);
+        $stmt->execute();
+
+        $user = $stmt->fetch(PDO::FETCH_OBJ);
+
+        if (!$user) {
+            throw new Exception('User not found by given credentials');
+        }   
+
+        unset($user->password);
+
+        return $user;
+    }
 }
+
