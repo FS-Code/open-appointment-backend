@@ -9,7 +9,6 @@ use Exception;
 
 class User extends Model
 {
-
     public static function createUser(string $email, string $hashedPassword): int
     {
         // Check if user with given email already exists
@@ -46,11 +45,6 @@ class User extends Model
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // public static function hashPassword(string $password): string
-    // {
-    //     return password_hash($password, PASSWORD_DEFAULT);
-    // }
-
     public static function add(array $params): int
     {
         return 0;
@@ -59,6 +53,55 @@ class User extends Model
     public static function remove(int $id): bool
     {
         return true;
+    }
+
+    public static function getUserById(int $id): object
+    {
+        $db       = DB::DB();
+        $query    = "SELECT id, email FROM user WHERE id= :id";
+        $prepared = $db->prepare($query);
+        $prepared->bindParam(":id", $id, PDO::PARAM_INT);
+        $prepared->execute();
+
+        $result = $prepared->fetchObject();
+        
+        if (!$result) {
+            throw new Exception("User not found by given id");
+        }
+        
+        return $result;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public static function updateUserPassword(
+        int $id,
+        string $password
+    ):void
+    {
+        //Assuming DB() creates the connection;
+
+        $db = \App\Core\DB::DB();
+
+        //SQL Query;
+
+        $query = "UPDATE user SET password = :password WHERE id = :id";
+
+        $statement = $db->prepare( $query );
+
+        //Binding parameters;
+
+        $statement->bindParam( ':id', $id );
+        $statement->bindParam( ':password', $password);
+
+        $statement->execute();
+
+        //Exception handling;
+
+        if ($statement->rowCount() == 0) {
+            throw new \Exception("User not found!");
+        }
     }
 
     public static function getUserByLoginPass(string $email, string $password): object
@@ -80,4 +123,3 @@ class User extends Model
         return $user;
     }
 }
-
