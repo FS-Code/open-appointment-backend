@@ -1,30 +1,29 @@
 <?php
 
 namespace App\Integrations;
+require 'vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\SMTP;
-use App\Core\Env;
 
 class Mailer
 {
     public static function sendMessage(string $to, string $subject, string $message): void
     {
-        Env::init();
         $mail = new PHPMailer(true);
 
         try {
             $mail->SMTPDebug = SMTP::DEBUG_SERVER;
             $mail->isSMTP();
-            $mail->Host       = $_ENV['SMTP_HOST'];
+            $mail->Host       = 'smtp.example.com';
             $mail->SMTPAuth   = true;
-            $mail->Username   = $_ENV['SMTP_USERNAME'];
-            $mail->Password   = $_ENV['SMTP_PASSWORD'];
+            $mail->Username   = 'my_email@example.com';
+            $mail->Password   = 'my_password';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            $mail->Port       = $_ENV['SMTP_PORT'];
+            $mail->Port       = 587;
 
-            $mail->setFrom($_ENV['FROM_EMAIL'], $_ENV['FROM_NAME']);
+            $mail->setFrom('my_email@example.com', 'My Name');
             $mail->addAddress($to);
 
             $mail->isHTML(true);
