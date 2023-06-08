@@ -142,7 +142,6 @@ class Service extends Model {
         $stmt = $db
             ->prepare("DELETE FROM service WHERE id=?")
             ->execute([$id]);
-
         if(!$stmt->rowCount()){
             throw new \Exception('Service not found');
         }
