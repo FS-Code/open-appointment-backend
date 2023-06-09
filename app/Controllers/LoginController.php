@@ -2,39 +2,33 @@
 
 namespace App\Controllers;
 
+use App\Models\User;
 use App\Core\Request;
 use App\Core\Response;
-use App\Models\User;
+use App\Helpers\AuthHelper;
 
 class LoginController
 {
-    public function login(Request $request)
+    public function login()
     {
-        $email = $request->post('email');
-        $password = $request->post('password');
+        $email = Request::post('email');
+        $password = Request::post('password');
 
-        $user = new User(null, $email, $password);
-        $existingUser = $user->getUserByEmail($email);
+        $user = (new User())->getUserByEmail($email);
 
-        if (!$existingUser) {
-            return Response::json([
-                'error' => 'Email or password is not correct'
-            ]);
+        if (!$user || !AuthHelper::verifyPassword($password, $user['password'])) {
+            Response::setStatusBadRequest();
+            return ['error' => 'Email or password is not correct'];
         }
 
-        if (!password_verify($password, $existingUser['password'])) {
-            return Response::json([
-                'error' => 'Email or password is not correct'
-            ]);
-        }
-
-        return Response::json([
+        Response::setStatusOk();
+        return [
             'data' => [
                 'user' => [
-                    'id' => $existingUser['id'],
-                    'email' => $existingUser['email']
+                    'id' => $user['id'],
+                    'email' => $user['email']
                 ]
             ]
-        ]);
+        ];
     }
 }
