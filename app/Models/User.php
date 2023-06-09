@@ -48,7 +48,7 @@ class User extends Model
 
 
 
-    private function getUserByEmail($email)
+    public function getUserByEmail($email)
     {
         $db = DB::DB();
         $stmt = $db->prepare('SELECT * FROM users WHERE email = :email');
@@ -58,7 +58,7 @@ class User extends Model
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    private function getUserById($id)
+    public function getUserById($id)
     {
         $db = DB::DB();
         $stmt = $db->prepare('SELECT * FROM users WHERE id = :id');

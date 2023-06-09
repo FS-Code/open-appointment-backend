@@ -13,7 +13,7 @@ class LoginController
         $email = Request::post('email');
         $password = Request::post('password');
 
-        $user = new User()->getUserByEmail($email);
+        $user = User::getUserByEmail($email);
 
         if (!$user || !password_verify($password, $user['password'])) {
             Response::setStatusBadRequest();
