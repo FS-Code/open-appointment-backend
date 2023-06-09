@@ -1,6 +1,8 @@
 <?php
 
 use App\Controllers\HomeController;
+use App\Controllers\LoginController;
+
 use App\Core\Router;
 
 
@@ -15,4 +17,8 @@ Router::group( 'user', function () {
     Router::get( '', [ HomeController::class, 'index' ] );
 
     Router::get( 'new', [ HomeController::class, 'test' ] );
+} );
+
+Router::group( 'api', function() {
+    Router::post( '/login', [LoginController::class, 'login' ] );
 } );
