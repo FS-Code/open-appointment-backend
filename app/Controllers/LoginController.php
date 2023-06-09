@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Models\User;
 use App\Core\Request;
 use App\Core\Response;
-use App\Helpers\AuthHelper;
 
 class LoginController
 {
@@ -14,9 +13,9 @@ class LoginController
         $email = Request::post('email');
         $password = Request::post('password');
 
-        $user = (new User())->getUserByEmail($email);
+        $user = new User()->getUserByEmail($email);
 
-        if (!$user || !AuthHelper::verifyPassword($password, $user['password'])) {
+        if (!$user || !password_verify($password, $user['password'])) {
             Response::setStatusBadRequest();
             return ['error' => 'Email or password is not correct'];
         }
