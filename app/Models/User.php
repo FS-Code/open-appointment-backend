@@ -6,8 +6,20 @@ use App\DB\Model;
 use App\Core\DB;
 use PDO;
 
+
+
 class User extends Model
 {
+    public static function add( array $params ):int
+    {
+        return 0;
+    }
+
+    public static function remove( int $id ):bool
+    {
+        return true;
+    }
+
     private $id;
     private $email;
     private $password;
@@ -34,19 +46,7 @@ class User extends Model
         return $this->password;
     }
 
-    public static function add(array $params): int
-    {
-        $db = DB::DB();
 
-        return $db->lastInsertId();
-    }
-
-    public static function remove(int $id): bool
-    {
-        $db = DB::DB();
-
-        return true;
-    }
 
     private function getUserByEmail($email)
     {
@@ -67,4 +67,5 @@ class User extends Model
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
 }
