@@ -12,6 +12,7 @@ const StatusMethodNotAllowed = 405;
 const StatusCreated          = 201;
 const StatusNoContent        = 204;
 const StatusFound            = 302;
+const StatusConflict         = 409;
 
 class Response
 {
@@ -34,4 +35,14 @@ class Response
     {
         http_response_code( StatusBadRequest );
     }
+
+	public static function setStatusCreated(): void
+	{
+		http_response_code( StatusCreated );
+	}
+
+	public static function setStatusConflict(): void
+	{
+		http_response_code( StatusConflict );
+	}
 }

@@ -58,7 +58,7 @@ class User extends Model
     public static function getUserById(int $id): object
     {
         $db       = DB::DB();
-        $query    = "SELECT id, email FROM user WHERE id= :id";
+        $query    = "SELECT id, email FROM users WHERE id= :id";
         $prepared = $db->prepare($query);
         $prepared->bindParam(":id", $id, PDO::PARAM_INT);
         $prepared->execute();
@@ -86,7 +86,7 @@ class User extends Model
 
         //SQL Query;
 
-        $query = "UPDATE user SET password = :password WHERE id = :id";
+        $query = "UPDATE users SET password = :password WHERE id = :id";
 
         $statement = $db->prepare( $query );
 
@@ -106,7 +106,7 @@ class User extends Model
 
     public static function getUserByLoginPass(string $email, string $password): object
     {
-        $query = "SELECT * FROM user WHERE email = :email AND password = :password";
+        $query = "SELECT * FROM users WHERE email = :email AND password = :password";
         $stmt = DB::DB()->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $password);
