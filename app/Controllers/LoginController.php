@@ -8,7 +8,7 @@ use App\Core\Request;
 use App\Models\User;
 use App\Helpers\AuthHelper;
 
-class UserController
+class LoginController
 {
     public function login()
     {
