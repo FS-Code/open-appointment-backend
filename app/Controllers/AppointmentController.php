@@ -6,6 +6,7 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\DB;
 use PDO;
+use Exception;
 
 class AppointmentController {
 
@@ -18,9 +19,11 @@ class AppointmentController {
             return [ 'error' => 'Invalid request parameters' ];
         }
 
-        $service = DB::DB()->query(
-            "SELECT * FROM service WHERE id = $serviceId LIMIT 1"
-        )->fetch(PDO::FETCH_ASSOC);
+        $stmt = DB::DB()->prepare("SELECT * FROM service WHERE id = :serviceId LIMIT 1");
+        $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $service = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$service) {
             Response::setStatusBadRequest();
@@ -30,13 +33,17 @@ class AppointmentController {
         $businessHoursId = $service['business_hours_id'];
         $duration = $service['duration'];
 
-        $businessHours = DB::DB()->query(
-            "SELECT * FROM business_hours WHERE id = $businessHoursId LIMIT 1"
-        )->fetch(PDO::FETCH_ASSOC);
-
-        $timeslots = [];
-        $startFromDateTime = new \DateTime($startFrom);
-        $endOfMonthDateTime = (new \DateTime($startFrom))->modify('last day of this month');
+        try {
+            $businessHours = DB::DB()->query(
+                "SELECT * FROM business_hours WHERE id = $businessHoursId LIMIT 1"
+            )->fetch(PDO::FETCH_ASSOC);
+            $timeslots = [];
+            $startFromDateTime = new \DateTime($startFrom);
+            $endOfMonthDateTime = (new \DateTime($startFrom))->modify('last day of this month');
+        } catch (Exception $e) {
+            Response::setStatusBadRequest();
+            return ['error' => $e->getMessage()];
+        }
 
         while ($startFromDateTime <= $endOfMonthDateTime) {
             $weekDay = strtolower($startFromDateTime->format('l'));
