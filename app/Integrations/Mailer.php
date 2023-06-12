@@ -11,7 +11,6 @@ class Mailer
 {
     public static function sendMessage(string $to, string $subject, string $message): void
     {
-        Env::init();
         $mail = new PHPMailer(true);
 
         try {
