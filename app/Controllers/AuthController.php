@@ -22,16 +22,16 @@ class AuthController
 
                 $token = AuthHelper::generateJWT([
                     'id' => $user['id'],
-                    'email' => $user['email'],
                 ]);
 
                 $responseData = [
                     'user' => [
                         'id' => $user['id'],
                         'email' => $user['email'],
-                    ],
-                    'token' => $token,
+                    ]
                 ];
+
+                setcookie('token', $token, 0, '/');
 
                 Response::setStatusOk();
                 Response::json($responseData);
