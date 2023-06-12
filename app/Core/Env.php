@@ -47,6 +47,5 @@ class Env
         self::$smtp['from_name']  = $_ENV['FROM_NAME'] ?? '';
 
 	    self::$secret = $_ENV[ 'SECRET_KEY' ] ?? '';
-
     }
 }
