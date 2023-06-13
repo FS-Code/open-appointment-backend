@@ -135,4 +135,23 @@ class Service extends Model {
     {
         return $this->id;
     }
+
+    public function delete(int $id) : void
+    {
+        $db = DB::DB();
+        $stmt = $db->prepare("SELECT buffer_id, business_hours_id FROM service WHERE id=?");
+        $stmt->execute([$id]);
+        $row = $stmt->fetch();
+
+        if(!$row){
+            throw new \Exception('Service not found');
+        }
+
+        $db->prepare("DELETE FROM service WHERE id=?")
+            ->execute([$id]);
+
+        Buffer::delete($row['buffer_id']);
+        BusinessHours::delete($row['business_hours_id']);
+    }
+
 }
