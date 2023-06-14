@@ -31,9 +31,6 @@ class Env
 
         //initialize database environment variables
 
-        self::$db['dsn']  = $_ENV['DB_DSN'] ?? '';
-        self::$db['user'] = $_ENV['DB_USER'] ?? '';
-        self::$db['pass'] = $_ENV['DB_PASS'] ?? '';
         self::$db[ 'dsn' ]  = $_ENV[ 'DB_DSN' ] ?? '';
         self::$db[ 'user' ] = $_ENV[ 'DB_USER' ] ?? '';
         self::$db[ 'pass' ] = $_ENV[ 'DB_PASS' ] ?? '';
