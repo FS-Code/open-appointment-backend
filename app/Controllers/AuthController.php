@@ -22,12 +22,12 @@ class AuthController
 
             $user = User::getUserByEmail($email);
 
-            if ($user && password_verify($password, $user['password'])) {
+            if (password_verify($password, $user->getPassword())) {
 
                 $expiresAt = time() + 60 * 60 * 24 * 7;
 
                 $token = AuthHelper::generateJWT([
-                    'user_id' => $user['id'],
+                    'user_id' => $user->getId(),
                     'exp' => $expiresAt,
                 ]);
 
@@ -37,8 +37,8 @@ class AuthController
 
                 return [
                     'user' => [
-                        'id' => $user['id'],
-                        'email' => $user['email'],
+                        'id' => $user->getId(),
+                        'email' => $user->getEmail(),
                     ]
                 ];
             } else {
