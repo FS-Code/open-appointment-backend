@@ -56,4 +56,35 @@ class AuthHelper
 		);
 	}
 
+    /**
+     * @description since base64_decode does not replace the given signs, we need to do it manually with the help of str_replace built-in function. Because we need those to be changed in the jwt.
+     */
+    public static function base64UrlDecode( string $text ) : string
+    {
+        return base64_decode( str_replace(
+            [ '-', '_' ],
+            [ '+', '/' ],
+            $text
+        ) );
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function readJWT (string $jwt ) : string | array {
+        if ( ! Env::$secret )
+        {
+            throw new Exception( "Private key is missing" );
+        }
+
+        $parts = explode(".", $jwt);
+
+        if (count($parts) !== 3) throw new Exception("Token is malformed");
+
+        $payload = self::base64UrlDecode( $parts[1] );
+
+        if (self::generateJWT($payload) !== $jwt) throw new Exception("Token is invalid");
+
+        return json_decode($payload, true) ?? $payload;
+    }
 }

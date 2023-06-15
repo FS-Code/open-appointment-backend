@@ -9,6 +9,43 @@ use Exception;
 
 class User extends Model
 {
+    private int $id;
+    private string $email;
+    private string $password;
+
+    /**
+     * @throws Exception
+     */
+    public function __construct(int|null $id = null )
+    {
+        if ( ! empty( $id ) ) {
+            $query = DB::DB()->prepare( "SELECT * FROM users WHERE id= :id" );
+            $query->bindParam( ":id", $id, PDO::PARAM_INT );
+            $query->execute();
+
+            $user = $query->fetchObject();
+
+            if ( !$user ) throw new Exception("User not found");
+
+            $this->id = $id;
+            $this->email = $user->email;
+            $this->password = $user->password;
+        }
+    }
+
+    public function getId (): int
+    {
+        return $this->id;
+    }
+
+    public function getEmail (): string {
+        return $this->email;
+    }
+
+    public function getPassword (): string {
+        return $this->password;
+    }
+
     public static function createUser(string $email, string $hashedPassword): int
     {
         // Check if user with given email already exists
@@ -32,44 +69,20 @@ class User extends Model
         
     }
 
-    public static function getUserByEmail(string $email)
+    /**
+     * @throws Exception
+     */
+    public static function getUserByEmail(string $email): User
     {
-        $query = "SELECT * FROM users WHERE email = :email LIMIT 1";
-        $params = [
-            'email' => $email,
-        ];
-        $connection = DB::DB(); // Get the existing PDO connection
-        $stmt = $connection->prepare($query);
-        $stmt->execute($params);
+        $query = DB::DB()->prepare( "SELECT * FROM users WHERE email = :email" );
+        $query->bindParam( ":email", $email, PDO::PARAM_STR );
+        $query->execute();
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+        $user = $query->fetchObject();
 
-    public static function add(array $params): int
-    {
-        return 0;
-    }
+        if ( !$user ) throw new Exception("User not found");
 
-    public static function remove(int $id): bool
-    {
-        return true;
-    }
-
-    public static function getUserById(int $id): object
-    {
-        $db       = DB::DB();
-        $query    = "SELECT id, email FROM users WHERE id= :id";
-        $prepared = $db->prepare($query);
-        $prepared->bindParam(":id", $id, PDO::PARAM_INT);
-        $prepared->execute();
-
-        $result = $prepared->fetchObject();
-        
-        if (!$result) {
-            throw new Exception("User not found by given id");
-        }
-        
-        return $result;
+        return new User($user->id);
     }
 
     /**

@@ -27,11 +27,11 @@ class AuthController
                 $expiresAt = time() + 60 * 60 * 24 * 7;
 
                 $token = AuthHelper::generateJWT([
-                    'id' => $user['id'],
+                    'user_id' => $user['id'],
                     'exp' => $expiresAt,
                 ]);
 
-                setcookie('token', $token, $expiresAt);
+                setcookie('auth_token', $token, $expiresAt);
 
                 Response::setStatusOk();
 
@@ -80,7 +80,7 @@ class AuthController
             $userId = User::createUser( $email, $hashedPassword );
             $expiresAt = time() + 60 * 60 * 24 * 7;
 
-            $jwt = AuthHelper::generateJWT( [ "userId" => $userId, "exp" => $expiresAt ] );
+            $jwt = AuthHelper::generateJWT( [ "user_id" => $userId, "exp" => $expiresAt ] );
 
             setcookie( 'auth_token', $jwt, $expiresAt );
         }
@@ -92,5 +92,11 @@ class AuthController
 
         Response::setStatusCreated();
         return [ 'user' => [ 'id' => $userId, 'email' => $email ] ];
+    }
+
+    public static function me (): array {
+        return [
+            'user' => [ 'id' => Request::$user->getId(), 'email' => Request::$user->getEmail() ]
+        ];
     }
 }
