@@ -57,9 +57,9 @@ class Router
     {
         $path   = Request::path();
         $method = Request::method();
-
+        
         $callback = self::$routes[ $method ][ $path ] ?? false;
-
+        
         if ( $callback === false )
         {
             Response::setStatusNotFound();

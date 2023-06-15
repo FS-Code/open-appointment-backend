@@ -90,4 +90,11 @@ class Buffer extends Model {
     {
         return $this->afterTime;
     }
+
+    public static function delete(int $id) : void
+    {
+        $db = DB::DB();
+        $db->prepare("DELETE FROM buffers WHERE id=?")
+            ->execute([$id]);
+    }
 }
