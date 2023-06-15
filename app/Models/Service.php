@@ -129,6 +129,9 @@ class Service extends Model {
         DB::exeSQL($sql, $val);
     }
 
+    /**
+     * @throws Exception
+     */
     private function checkDurationValidity(): void
     {
         if ($this->duration < 60)
