@@ -21,6 +21,6 @@ Router::group( 'user', function () {
 } );
 
 Router::group( 'api', function() {
-	Router::post( 'register', [ UserController::class, 'register' ] );
+	Router::post( 'register', [ AuthController::class, 'register' ] );
     Router::post( 'login', [ AuthController::class, 'login' ] );
 } );
