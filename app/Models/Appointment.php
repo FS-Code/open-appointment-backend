@@ -50,7 +50,7 @@ function createAppointment(int $serviceId, array $customer, int $startsAt): int
 function isTimeSlotBusy(int $serviceId, int $startsAt, int $endsAt): bool
 {
     // Implement your database query here to check for overlapping appointments.
-    $query = "SELECT COUNT(*) FROM appointments WHERE service_id = ? AND starts_at < ? AND ends_at > ?";
+    $query = "SELECT COUNT(*) FROM appointment WHERE service_id = ? AND starts_at < ? AND ends_at > ?";
     $count = DB::exeSQL($query, [$serviceId, $endsAt, $startsAt])->fetchColumn();
 
     return $count > 0;
@@ -66,7 +66,7 @@ function isTimeSlotBusy(int $serviceId, int $startsAt, int $endsAt): bool
 function insertCustomer(array $customer): int
 {
     // Implement your database query here to insert customer data.
-    $query = "INSERT INTO customers (name, email) VALUES (?, ?)";
+    $query = "INSERT INTO customer (name, email) VALUES (?, ?)";
     DB::exeSQL($query, [$customer['name'], $customer['email']]);
 
     return DB::getLastInsertedId();
@@ -85,7 +85,7 @@ function insertCustomer(array $customer): int
 function insertAppointment(int $serviceId, int $customerId, int $startsAt, int $endsAt): int
 {
     // Implement your database query here to insert appointment data.
-    $query = "INSERT INTO appointments (service_id, customer_id, starts_at, ends_at) VALUES (?, ?, ?, ?)";
+    $query = "INSERT INTO appointment (service_id, customer_id, starts_at, ends_at) VALUES (?, ?, ?, ?)";
     DB::exeSQL($query, [$serviceId, $customerId, $startsAt, $endsAt]);
 
     return DB::getLastInsertedId();
@@ -100,7 +100,7 @@ function insertAppointment(int $serviceId, int $customerId, int $startsAt, int $
  */
 function getServiceDuration(int $serviceId): int
 {
-    $query = "SELECT duration FROM services WHERE id = ?";
+    $query = "SELECT duration FROM service WHERE id = ?";
     $duration = DB::exeSQL($query, [$serviceId])->fetchColumn();
 
     return $duration;
