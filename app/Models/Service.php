@@ -54,7 +54,7 @@ class Service extends Model {
 
     private function insert(array $val): void
     {
-        $sql = "INSERT INTO service (name, location, details, duration, business_hours_id, buffer_id)
+        $sql = "INSERT INTO services (name, location, details, duration, business_hours_id, buffer_id)
                 VALUES (:name, :location, :details, :duration, :business_hours_id, :buffer_id)";
 
         $this->setId(DB::exeSQL($sql, $val));
@@ -62,7 +62,7 @@ class Service extends Model {
 
     private function update(array $val): void
     {
-        $sql = "UPDATE service
+        $sql = "UPDATE services
                 SET name = :name, location = :location, details = :details, duration = :duration,
                     business_hours_id = :business_hours_id, buffer_id = :buffer_id
                 WHERE id = $this->id";
