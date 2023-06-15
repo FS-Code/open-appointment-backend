@@ -9,9 +9,6 @@ use App\Core\Router;
 
 /*-----------initialize routes-----------*/
 
-Router::get('open-appointment-backend', [ HomeController::class, 'index' ] );
-
-
 Router::get( '', [ HomeController::class, 'index' ] );
 
 Router::group( 'api', function() {
