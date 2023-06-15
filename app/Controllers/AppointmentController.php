@@ -19,7 +19,7 @@ class AppointmentController {
             return [ 'error' => 'Invalid request parameters' ];
         }
 
-        $stmt = DB::DB()->prepare("SELECT * FROM service WHERE id = :serviceId LIMIT 1");
+        $stmt = DB::DB()->prepare("SELECT * FROM services WHERE id = :serviceId LIMIT 1");
         $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
         $stmt->execute();
 
@@ -51,7 +51,7 @@ class AppointmentController {
             if (isset($businessHours[$weekDay])) {
                 $weekDayId = $businessHours[$weekDay];
                 $weekDayHours = DB::DB()->query(
-                    "SELECT * FROM week_day WHERE id = $weekDayId LIMIT 1"
+                    "SELECT * FROM week_days WHERE id = $weekDayId LIMIT 1"
                 )->fetch(PDO::FETCH_ASSOC);
 
                 if ($weekDayHours) {
