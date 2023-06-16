@@ -46,33 +46,31 @@ class User extends Model
         return $this->password;
     }
 
+    /**
+     * @throws Exception
+     */
     public static function createUser(string $email, string $hashedPassword): int
     {
         // Check if user with given email already exists
         $existingUser = self::getUserByEmail($email);
-        if ($existingUser) {
-            throw new \Exception('This user already exists.');
-        }
 
-            // Insert the new user into the database
-            $query = "INSERT INTO users (email, password) VALUES (:email, :password)";
-            $params = [
-                'email' => $email,
-                'password' => $hashedPassword,
-            ];
-            $connection = DB::DB(); // Get the existing PDO connection
-            $stmt = $connection->prepare($query);
-            $stmt->execute($params);
+        if ($existingUser) throw new \Exception('This user already exists.');
 
-            // Return the ID of the newly created user
-            return $connection->lastInsertId();
-        
+        // Insert the new user into the database
+        $query = "INSERT INTO users (email, password) VALUES (:email, :password)";
+        $params = [
+            'email' => $email,
+            'password' => $hashedPassword,
+        ];
+        $connection = DB::DB(); // Get the existing PDO connection
+        $stmt = $connection->prepare($query);
+        $stmt->execute($params);
+
+        // Return the ID of the newly created user
+        return $connection->lastInsertId();
     }
 
-    /**
-     * @throws Exception
-     */
-    public static function getUserByEmail(string $email): User
+    public static function getUserByEmail(string $email): User|null
     {
         $query = DB::DB()->prepare( "SELECT * FROM users WHERE email = :email" );
         $query->bindParam( ":email", $email, PDO::PARAM_STR );
@@ -80,7 +78,7 @@ class User extends Model
 
         $user = $query->fetchObject();
 
-        if ( !$user ) throw new Exception("User not found");
+        if ( !$user ) return null;
 
         return new User($user->id);
     }
