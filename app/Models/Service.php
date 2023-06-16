@@ -9,6 +9,7 @@ use Exception;
 
 class Service extends Model {
     private int $id;
+    private int $userId;
     private string $name;
     private string $location;
     private string $details;
@@ -37,6 +38,7 @@ class Service extends Model {
     public function save(): void
     {
         $val = [
+            'user_id'           => [ $this->getUserId(),          PDO::PARAM_INT ],
             'name'              => [ $this->getName(),            PDO::PARAM_STR ],
             'location'          => [ $this->getLocation(),        PDO::PARAM_STR ],
             'details'           => [ $this->getDetails(),         PDO::PARAM_STR ],
@@ -51,6 +53,11 @@ class Service extends Model {
             $this->update($val);
     }
 
+    public function setUserId(int $userId): Service {
+        $this->userId = $userId;
+
+        return $this;
+    }
     public function setName(string $name): void
     {
         $this->name = $name;
@@ -80,6 +87,9 @@ class Service extends Model {
     public function getId(): int
     {
         return $this->id;
+    }
+    public function getUserId(): int {
+        return $this->userId;
     }
     public function getName(): string
     {
@@ -113,8 +123,8 @@ class Service extends Model {
 
     private function insert(array $val): void
     {
-        $sql = "INSERT INTO services (name, location, details, duration, business_hours_id, buffer_id)
-                VALUES (:name, :location, :details, :duration, :business_hours_id, :buffer_id)";
+        $sql = "INSERT INTO services (user_id, name, location, details, duration, business_hours_id, buffer_id)
+                VALUES (:user_id, :name, :location, :details, :duration, :business_hours_id, :buffer_id)";
 
         $this->setId(DB::exeSQL($sql, $val));
     }
@@ -122,7 +132,7 @@ class Service extends Model {
     private function update(array $val): void
     {
         $sql = "UPDATE services
-                SET name = :name, location = :location, details = :details, duration = :duration,
+                SET user_id = :user_id, name = :name, location = :location, details = :details, duration = :duration,
                     business_hours_id = :business_hours_id, buffer_id = :buffer_id
                 WHERE id = $this->id";
 

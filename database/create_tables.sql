@@ -5,7 +5,9 @@ USE open_appointment;
 CREATE TABLE users (
                        id INT AUTO_INCREMENT PRIMARY KEY,
                        email VARCHAR(255) NOT NULL,
-                       password VARCHAR(255) NOT NULL
+                       password VARCHAR(255) NOT NULL,
+                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE week_days (
@@ -40,12 +42,16 @@ CREATE TABLE buffers (
 
 CREATE TABLE services (
                           id INT AUTO_INCREMENT PRIMARY KEY,
+                          user_id INT NOT NULL,
                           name VARCHAR(255) NOT NULL,
                           location VARCHAR(255) NOT NULL,
                           details TEXT NOT NULL,
                           duration INT NOT NULL,
                           business_hours_id INT NOT NULL,
                           buffer_id INT NOT NULL,
+                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                          FOREIGN KEY (user_id) REFERENCES users(id),
                           FOREIGN KEY (business_hours_id) REFERENCES business_hours(id),
                           FOREIGN KEY (buffer_id) REFERENCES buffers(id)
 );
@@ -53,16 +59,21 @@ CREATE TABLE services (
 CREATE TABLE customers (
                            id INT AUTO_INCREMENT PRIMARY KEY,
                            name VARCHAR(255) NOT NULL,
-                           email VARCHAR(255) NOT NULL
+                           email VARCHAR(255) NOT NULL,
+                           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE appointments (
                               id INT AUTO_INCREMENT PRIMARY KEY,
+                              user_id INT NOT NULL,
                               service_id INT NOT NULL,
                               customer_id INT NOT NULL,
                               starts_at TIMESTAMP NOT NULL,
                               ends_at TIMESTAMP NOT NULL,
                               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                              updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                              FOREIGN KEY (user_id) REFERENCES users(id),
                               FOREIGN KEY (service_id) REFERENCES services(id),
                               FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
