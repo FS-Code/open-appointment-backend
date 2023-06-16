@@ -22,6 +22,8 @@ class AuthController
 
             $user = User::getUserByEmail($email);
 
+            if (!$user) throw new Exception("Email or password is incorrect!");
+
             if (password_verify($password, $user->getPassword())) {
 
                 $expiresAt = time() + 60 * 60 * 24 * 7;
