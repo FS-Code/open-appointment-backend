@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Service;
+
+Route::match(['post', 'delete'], 'api/delete-services', function (Request $request) {
+    
+    if (!Auth::check()) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+   
+    $user = Auth::user();
+
+    
+    $serviceIds = $request->input('ids', []);
+
+    $services = Service::whereIn('id', $serviceIds)
+        ->where('user_id', $user->id)
+        ->get();
+
+    if ($services->isEmpty()) {
+        return response()->json(['error' => 'You don\'t have permission'], 403);
+    }
+
+
+    Service::whereIn('id', $serviceIds)->delete();
+
+    
+    return response()->json(['data' => []]);
+})->middleware('auth');
