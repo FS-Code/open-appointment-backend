@@ -77,3 +77,13 @@ CREATE TABLE appointments (
                               FOREIGN KEY (service_id) REFERENCES services(id),
                               FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
+
+CREATE TABLE settings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  `key` VARCHAR(255) NOT NULL,
+  value VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
