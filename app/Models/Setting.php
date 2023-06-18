@@ -24,7 +24,7 @@ class Setting extends Model
 
     public static function set($userId, $key, $value)
     {
-        $sql = "INSERT INTO settings (user_id, `key`, value) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO settings (user_id, `key`, value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE value = ?";
         $valuesNTypes = [
             'user_id' => [$userId, \PDO::PARAM_INT],
             'key' => [$key, \PDO::PARAM_STR],
@@ -34,17 +34,7 @@ class Setting extends Model
         return DB::exeSQL($sql, $valuesNTypes);
     }
 
-     public static function update($userId, $key, $value)
-    {
-        $sql = "UPDATE settings SET value = ? WHERE user_id = ? AND `key` = ?";
-        $valuesNTypes = [
-            'value' => [$value, \PDO::PARAM_STR],
-            'user_id' => [$userId, \PDO::PARAM_INT],
-            'key' => [$key, \PDO::PARAM_STR]
-        ];
 
-        return DB::exeSQL($sql, $valuesNTypes);
-    }
 
     public static function delete($userId, $key)
     {
