@@ -1,6 +1,9 @@
 <?php
 
 use App\Controllers\HomeController;
+use App\Controllers\UserController;
+use App\Controllers\AuthController;
+
 use App\Core\Router;
 
 
@@ -18,4 +21,14 @@ Router::group( 'user', function () {
     Router::get( '', [ HomeController::class, 'index' ] );
 
     Router::get( 'new', [ HomeController::class, 'test' ] );
+} );
+
+Router::group( 'api', function() {
+	Router::post( 'register', [ UserController::class, 'register' ] );
+} );
+
+
+
+Router::group( 'api', function() {
+    Router::post( '/login', [ AuthController::class, 'login' ] );
 } );
