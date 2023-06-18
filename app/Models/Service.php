@@ -17,7 +17,8 @@ class Service extends Model {
     private int $businessHoursId;
     private int $bufferId;
 
-    public function delete(int $id) : void
+    //ozu de foreign key oldugu ucun static eledim
+    public static function delete(int $id) : void
     {
         $db = DB::DB();
         $stmt = $db->prepare("SELECT buffer_id, business_hours_id FROM services WHERE id=?");
