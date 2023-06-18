@@ -67,3 +67,15 @@ CREATE TABLE appointment (
     FOREIGN KEY (service_id) REFERENCES service(id),
     FOREIGN KEY (customer_id) REFERENCES customer(id)
 );
+
+CREATE TABLE `open_appointment`.`settings`
+ (
+        `id` INT NOT NULL AUTO_INCREMENT , PRIMARY KEY (`id`),
+        `key` VARCHAR(255) NOT NULL ,
+        `value` VARCHAR(255) NULL DEFAULT NULL , 
+        `user_id` INT NOT NULL , 
+        `updated_at` TIMESTAMP on update CURRENT_TIMESTAMP NULL DEFAULT NULL , 
+        `deleted_at` TIMESTAMP NULL DEFAULT NULL , 
+        `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (`user_id`) REFERENCES users(id)
+ ) ENGINE = InnoDB;
