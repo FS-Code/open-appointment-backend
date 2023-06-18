@@ -33,16 +33,28 @@ class Settings extends Model{
     }
 
     public function set($user_id,$key,$value){
-        $query = "INSERT INTO `settings`
-                (`user_id`,`key`,`value`)
-                VALUES 
-                (?,?,?)";
+        $exist_id = $this->get($user_id,$key);
+
+        $query = $exist_id ? "UPDATE 
+                                `settings` 
+                            SET `value` = ? 
+                            WHERE `id` = ?"
+                            : 
+                            "INSERT INTO `settings`
+                            (`user_id`,`key`,`value`)
+                            VALUES 
+                            (?,?,?)";
         
-        $params = [
-            "user_id" => [$user_id,PDO::PARAM_INT],
-            "key" => [$key,PDO::PARAM_STR],
-            "value" => [$value,PDO::PARAM_STR]
-        ];
+        $params = $exist_id ? [
+                                "id" => [$exist_id,PDO::PARAM_INT],
+                                "value" => [$value,PDO::PARAM_STR]
+                              ] 
+                            :
+                              [
+                                "user_id" => [$user_id,PDO::PARAM_INT],
+                                "key" => [$key,PDO::PARAM_STR],
+                                "value" => [$value,PDO::PARAM_STR]
+                              ];
 
         $last_inserted_id = DB::exeSQL($query,$params);
 
