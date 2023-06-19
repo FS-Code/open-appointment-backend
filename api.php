@@ -4,7 +4,7 @@ use App\Controllers\HomeController;
 use App\Controllers\UserController;
 use App\Controllers\AuthController;
 use App\Controllers\ServiceController;
-use App\Middleware\AuthMiddleware;
+use App\Middlewares\AuthMiddleware;
 
 
 use App\Core\Router;

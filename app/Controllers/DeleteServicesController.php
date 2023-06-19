@@ -13,7 +13,7 @@ class ServiceController
         $userId = $request->user->id;
         $serviceIds = $request->getBody('ids', []);
 
-        // Find and delete services
+        
         foreach ($serviceIds as $serviceId) {
             $service = Service::find($serviceId);
 
