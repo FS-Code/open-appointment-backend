@@ -87,6 +87,7 @@ CREATE TABLE appointments
     FOREIGN KEY (customer_id) REFERENCES customers (id)
 );
 
+
 CREATE TABLE settings
 (
     id         INT AUTO_INCREMENT PRIMARY KEY,
