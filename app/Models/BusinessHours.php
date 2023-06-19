@@ -158,4 +158,11 @@ class BusinessHours extends Model {
     {
         return $this->sundayId;
     }
+
+    public static function delete(int $id) : void
+    {
+        $db = DB::DB();
+        $db->prepare("DELETE FROM business_hours WHERE id=?")
+            ->execute([$id]);
+    }
 }

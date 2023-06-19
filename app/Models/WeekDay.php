@@ -39,7 +39,7 @@ class WeekDay extends Model {
 
     private function insert(array $val): void
     {
-        $sql = "INSERT INTO week_day (start_time, end_time)
+        $sql = "INSERT INTO week_days (start_time, end_time)
                 VALUES (:start_time, :end_time)";
 
         $this->setId(DB::exeSQL($sql, $val));
@@ -47,7 +47,7 @@ class WeekDay extends Model {
 
     private function update(array $val): void
     {
-        $sql = "UPDATE week_day
+        $sql = "UPDATE week_days
                 SET start_time = :start_time, end_time = :end_time
                 WHERE id = $this->id";
 

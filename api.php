@@ -14,18 +14,13 @@ use App\Core\Router;
 
 Router::get( '', [ HomeController::class, 'index' ] );
 
-Router::post( 'test', [ HomeController::class, 'test' ] );
-Router::get( 'data', [ HomeController::class, 'someData' ] );
-
-Router::group( 'user', function () {
-    Router::get( '', [ HomeController::class, 'index' ] );
-
-    Router::get( 'new', [ HomeController::class, 'test' ] );
-} );
-
 Router::group( 'api', function() {
-	Router::post( 'register', [ UserController::class, 'register' ] );
+	Router::post( 'register', [ AuthController::class, 'register' ] );
+    Router::post( 'login', [ AuthController::class, 'login' ] );
+
+    Router::post('me', [AuthController::class, 'me'], [\App\Middlewares\AuthMiddleware::class]);
 } );
+<<<<<<< HEAD
 
 
 
@@ -39,3 +34,5 @@ Router::post('/delete', [ServiceController::class, 'deleteServices'])
 
 
 
+=======
+>>>>>>> fb4849cca81a2d1a02621053c91726800f87097a

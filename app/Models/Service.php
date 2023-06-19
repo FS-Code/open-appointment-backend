@@ -9,6 +9,7 @@ use Exception;
 
 class Service extends Model {
     private int $id;
+    private int $userId;
     private string $name;
     private string $location;
     private string $details;
@@ -16,28 +17,28 @@ class Service extends Model {
     private int $businessHoursId;
     private int $bufferId;
 
-    public static function create(string $name,
-                                  string $location,
-                                  string $details,
-                                  int $duration,
-                                  int $businessHoursId,
-                                  int $bufferId): self
+    public function delete(int $id) : void
     {
-        $service = new Service();
-        $service->setName($name);
-        $service->setLocation($location);
-        $service->setDetails($details);
-        $service->setDuration($duration);
-        $service->setBusinessHoursId($businessHoursId);
-        $service->setBufferId($bufferId);
-        $service->save();
+        $db = DB::DB();
+        $stmt = $db->prepare("SELECT buffer_id, business_hours_id FROM services WHERE id=?");
+        $stmt->execute([$id]);
+        $row = $stmt->fetch();
 
-        return $service;
+        if(!$row){
+            throw new \Exception('Service not found');
+        }
+
+        $db->prepare("DELETE FROM services WHERE id=?")
+            ->execute([$id]);
+
+        Buffer::delete($row['buffer_id']);
+        BusinessHours::delete($row['business_hours_id']);
     }
 
     public function save(): void
     {
         $val = [
+            'user_id'           => [ $this->getUserId(),          PDO::PARAM_INT ],
             'name'              => [ $this->getName(),            PDO::PARAM_STR ],
             'location'          => [ $this->getLocation(),        PDO::PARAM_STR ],
             'details'           => [ $this->getDetails(),         PDO::PARAM_STR ],
@@ -52,33 +53,10 @@ class Service extends Model {
             $this->update($val);
     }
 
-    private function insert(array $val): void
-    {
-        $sql = "INSERT INTO service (name, location, details, duration, business_hours_id, buffer_id)
-                VALUES (:name, :location, :details, :duration, :business_hours_id, :buffer_id)";
+    public function setUserId(int $userId): Service {
+        $this->userId = $userId;
 
-        $this->setId(DB::exeSQL($sql, $val));
-    }
-
-    private function update(array $val): void
-    {
-        $sql = "UPDATE service
-                SET name = :name, location = :location, details = :details, duration = :duration,
-                    business_hours_id = :business_hours_id, buffer_id = :buffer_id
-                WHERE id = $this->id";
-
-        DB::exeSQL($sql, $val);
-    }
-
-    private function checkDurationValidity(): void
-    {
-        if ($this->duration < 60)
-            throw new Exception("Duration can't be shorter than a minute");
-    }
-
-    private function setId(int $id): void
-    {
-        $this->id = $id;
+        return $this;
     }
     public function setName(string $name): void
     {
@@ -106,6 +84,13 @@ class Service extends Model {
         $this->bufferId = $bufferId;
     }
 
+    public function getId(): int
+    {
+        return $this->id;
+    }
+    public function getUserId(): int {
+        return $this->userId;
+    }
     public function getName(): string
     {
         return $this->name;
@@ -131,8 +116,35 @@ class Service extends Model {
         return $this->bufferId;
     }
 
-    public function getId(): int
+    private function setId(int $id): void
     {
-        return $this->id;
+        $this->id = $id;
+    }
+
+    private function insert(array $val): void
+    {
+        $sql = "INSERT INTO services (user_id, name, location, details, duration, business_hours_id, buffer_id)
+                VALUES (:user_id, :name, :location, :details, :duration, :business_hours_id, :buffer_id)";
+
+        $this->setId(DB::exeSQL($sql, $val));
+    }
+
+    private function update(array $val): void
+    {
+        $sql = "UPDATE services
+                SET user_id = :user_id, name = :name, location = :location, details = :details, duration = :duration,
+                    business_hours_id = :business_hours_id, buffer_id = :buffer_id
+                WHERE id = $this->id";
+
+        DB::exeSQL($sql, $val);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function checkDurationValidity(): void
+    {
+        if ($this->duration < 60)
+            throw new Exception("Duration can't be shorter than a minute");
     }
 }

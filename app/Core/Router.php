@@ -11,18 +11,24 @@ class Router
 
     private static array $prefixes = [];
 
-    public static function get( string $path, callable|array $callback ): void
+    public static function get( string $path, callable|array $callback, array $middlewares = []  ): void
     {
         $path = self::makePath( $path );
 
-        self::$routes[ 'get' ][ $path ] = $callback;
+        self::$routes[ 'get' ][ $path ] = [
+            'middlewares' => $middlewares,
+            'controller' => $callback
+        ];
     }
 
-    public static function post( string $path, callable|array $callback ): void
+    public static function post( string $path, callable|array $callback, array $middlewares = [] ): void
     {
         $path = self::makePath( $path );
 
-        self::$routes[ 'post' ][ $path ] = $callback;
+        self::$routes[ 'post' ][ $path ] = [
+            'middlewares' => $middlewares,
+            'controller' => $callback
+        ];
     }
 
     private static function makePath( $path ): string
@@ -58,15 +64,26 @@ class Router
         $path   = Request::path();
         $method = Request::method();
 
-        $callback = self::$routes[ $method ][ $path ] ?? false;
+        $route = self::$routes[ $method ][ $path ] ?? false;
 
-        if ( $callback === false )
+        if ( empty( $route[ 'controller' ] ) )
         {
             Response::setStatusNotFound();
-            echo "404 Not Found!";
-            exit;
+
+            exit("404 Not Found!");
         }
 
-        echo json_encode( [ 'data' => call_user_func( $callback ) ] );
+        if ( ! empty( $route['middlewares'] ) ) {
+            try {
+                foreach ( $route['middlewares'] as $middleware ) {
+                    call_user_func( [$middleware, 'index'] );
+                }
+            } catch (\Exception $e) {
+                echo json_encode( [ 'error' => $e->getMessage() ] );
+                return;
+            }
+        }
+        
+        echo json_encode( [ 'data' => call_user_func( $route[ 'controller' ] ) ] );
     }
 }

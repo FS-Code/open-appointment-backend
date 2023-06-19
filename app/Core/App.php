@@ -12,7 +12,8 @@ class App
         //initializes database connection
         DB::init();
 
-        //
+        header("Access-Control-Allow-Origin: *");
+
         Router::resolve();
     }
 }

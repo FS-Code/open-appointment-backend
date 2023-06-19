@@ -1,11 +1,9 @@
-# Enable rewriting engine
 RewriteEngine On
+RewriteBase /
 
-# Set the base directory
-
-# Handle requests for existing files or directories
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Redirect all requests to index.php
-RewriteRule ^(.*)$ index.php/$1 [QSA,L]
+RewriteRule ^api/(.*)$ index.php/$1 [QSA,L,END]
+
+RewriteRule ^(.*)$ public/index.html [L]
