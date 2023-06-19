@@ -7,6 +7,7 @@ use App\Core\DB;
 use PDO;
 use Exception;
 
+
 class Settings extends Model{
 
     private $db = DB::DB();
@@ -75,6 +76,4 @@ class Settings extends Model{
 
         return $deleted_id;
     }
-
-     
 }

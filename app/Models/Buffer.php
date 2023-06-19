@@ -40,7 +40,7 @@ class Buffer extends Model {
 
     private function insert(array $val): void
     {
-        $sql = "INSERT INTO buffer (before_time, after_time)
+        $sql = "INSERT INTO buffers (before_time, after_time)
                 VALUES (:before_time, :after_time)";
 
         $this->setId(DB::exeSQL($sql, $val));
@@ -48,7 +48,7 @@ class Buffer extends Model {
 
     private function update(array $val): void
     {
-        $sql = "UPDATE buffer
+        $sql = "UPDATE buffers
                 SET before_time = :before_time, after_time = :after_time
                 WHERE id = $this->id";
 
@@ -89,5 +89,12 @@ class Buffer extends Model {
     public function getAfterTime(): int
     {
         return $this->afterTime;
+    }
+
+    public static function delete(int $id) : void
+    {
+        $db = DB::DB();
+        $db->prepare("DELETE FROM buffers WHERE id=?")
+            ->execute([$id]);
     }
 }

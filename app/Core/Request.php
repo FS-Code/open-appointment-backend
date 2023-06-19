@@ -2,8 +2,12 @@
 
 namespace App\Core;
 
+use App\Models\User;
+
 class Request
 {
+    public static User $user;
+
     private static array $query = [];
 
     private static array $body = [];

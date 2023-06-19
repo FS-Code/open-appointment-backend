@@ -9,67 +9,78 @@ use Exception;
 
 class User extends Model
 {
+    private int $id;
+    private string $email;
+    private string $password;
+
+    /**
+     * @throws Exception
+     */
+    public function __construct(int|null $id = null )
+    {
+        if ( ! empty( $id ) ) {
+            $query = DB::DB()->prepare( "SELECT * FROM users WHERE id= :id" );
+            $query->bindParam( ":id", $id, PDO::PARAM_INT );
+            $query->execute();
+
+            $user = $query->fetchObject();
+
+            if ( !$user ) throw new Exception("User not found");
+
+            $this->id = $id;
+            $this->email = $user->email;
+            $this->password = $user->password;
+        }
+    }
+
+    public function getId (): int
+    {
+        return $this->id;
+    }
+
+    public function getEmail (): string {
+        return $this->email;
+    }
+
+    public function getPassword (): string {
+        return $this->password;
+    }
+
+    /**
+     * @throws Exception
+     */
     public static function createUser(string $email, string $hashedPassword): int
     {
         // Check if user with given email already exists
         $existingUser = self::getUserByEmail($email);
-        if ($existingUser) {
-            throw new \Exception('This user already exists.');
-        }
 
-            // Insert the new user into the database
-            $query = "INSERT INTO users (email, password) VALUES (:email, :password)";
-            $params = [
-                'email' => $email,
-                'password' => $hashedPassword,
-            ];
-            $connection = DB::DB(); // Get the existing PDO connection
-            $stmt = $connection->prepare($query);
-            $stmt->execute($params);
+        if ($existingUser) throw new \Exception('This user already exists.');
 
-            // Return the ID of the newly created user
-            return $connection->lastInsertId();
-        
-    }
-
-    public static function getUserByEmail(string $email)
-    {
-        $query = "SELECT * FROM users WHERE email = :email LIMIT 1";
+        // Insert the new user into the database
+        $query = "INSERT INTO users (email, password) VALUES (:email, :password)";
         $params = [
             'email' => $email,
+            'password' => $hashedPassword,
         ];
         $connection = DB::DB(); // Get the existing PDO connection
         $stmt = $connection->prepare($query);
         $stmt->execute($params);
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        // Return the ID of the newly created user
+        return $connection->lastInsertId();
     }
 
-    public static function add(array $params): int
+    public static function getUserByEmail(string $email): User|null
     {
-        return 0;
-    }
+        $query = DB::DB()->prepare( "SELECT * FROM users WHERE email = :email" );
+        $query->bindParam( ":email", $email, PDO::PARAM_STR );
+        $query->execute();
 
-    public static function remove(int $id): bool
-    {
-        return true;
-    }
+        $user = $query->fetchObject();
 
-    public static function getUserById(int $id): object
-    {
-        $db       = DB::DB();
-        $query    = "SELECT id, email FROM users WHERE id= :id";
-        $prepared = $db->prepare($query);
-        $prepared->bindParam(":id", $id, PDO::PARAM_INT);
-        $prepared->execute();
+        if ( !$user ) return null;
 
-        $result = $prepared->fetchObject();
-        
-        if (!$result) {
-            throw new Exception("User not found by given id");
-        }
-        
-        return $result;
+        return new User($user->id);
     }
 
     /**
