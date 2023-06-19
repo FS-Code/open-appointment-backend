@@ -9,8 +9,8 @@ use PDO;
 use Exception;
 
 class AppointmentController {
-
-    public function getAllTimeslots() {
+    public static function getAllTimeslots(): array
+    {
         $serviceId = Request::post('service_id');
         $startFrom = Request::post('start_from');
 

@@ -7,46 +7,54 @@ use App\Core\DB;
 
 class Customer extends Model
 {
-    private ?int $id;
-    private ?string $name;
-    private ?string $email;
+    private int $id;
+    private string $name;
+    private string $email;
 
-    public function __construct( ?int $id = null )
+    public function __construct( int|null $id = null )
     {
-        $this->id = $id;
-        if ($id != null) {
-            $this->getCustomerFromDatabase();
+        if ( ! empty( $id ) ) {
+            $statement = DB::DB()->prepare( "SELECT name, email FROM customers WHERE id = :id" );
+            $statement->bindParam( ':id', $id );
+            $statement->execute();
+            $result = $statement->fetch( \PDO::FETCH_OBJ );
+
+            if ( $result ) {
+                $this->id = $id;
+                $this->name = $result->name;
+                $this->email = $result->email;
+            }
         }
     }
 
-    public function getId():?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName():?string
+    public function getName (): string
     {
         return $this->name;
     }
 
-    public function setName(?string $name):void
+    public function setName (string $name): void
     {
         $this->name = $name;
     }
 
-    public function getEmail():?string
+    public function getEmail (): string
     {
         return $this->email;
     }
 
-    public function setEmail(?string $email):void
+    public function setEmail (string $email): void
     {
         $this->email = $email;
     }
 
     private function save():void
     {
-        if ($this->id !== null) {
+        if (!!$this->id) {
             $this->update();
         } else {
             $this->insert();
@@ -55,48 +63,29 @@ class Customer extends Model
 
     private function update():void
     {
-        $db = DB::DB();
-        $query = "UPDATE customer SET name = :name, email = :email WHERE id = :id";
-        $statement = $db->prepare($query);
+        $statement = DB::DB()->prepare( "UPDATE customers SET name = :name, email = :email WHERE id = :id" );
         $statement->bindParam(':name', $this->name);
         $statement->bindParam(':email', $this->email);
         $statement->bindParam(':id', $this->id);
         $statement->execute();
     }
 
-    private function insert(): void
+    private function insert (): void
     {
-        $db = DB::DB();
-        $query = "INSERT INTO customer (name, email) VALUES (:name, :email)";
-        $statement = $db->prepare($query);
+        $statement = DB::DB()->prepare( "INSERT INTO customers (name, email) VALUES (:name, :email)" );
         $statement->bindParam(':name', $this->name);
         $statement->bindParam(':email', $this->email);
         $statement->execute();
-        $this->id = $db->lastInsertId();
+
+        $this->id = DB::DB()->lastInsertId();
     }
 
-    private function delete(): void
+    private function delete (): void
     {
-        if ($this->id !== null) {
-            $db = DB::DB();
-            $query = "DELETE FROM customer WHERE id = :id";
-            $statement = $db->prepare($query);
+        if (!!$this->id) {
+            $statement = DB::DB()->prepare( "DELETE FROM customers WHERE id = :id" );
             $statement->bindParam(':id', $this->id);
             $statement->execute();
-        }
-    }
-
-    private function getCustomerFromDatabase(): void
-    {
-        $db = DB::DB();
-        $query = "SELECT name, email FROM customer WHERE id = :id";
-        $statement = $db->prepare($query);
-        $statement->bindParam(':id', $this->id);
-        $statement->execute();
-        $result = $statement->fetch();
-        if ($result) {
-            $this->name = $result['name'];
-            $this->email = $result['email'];
         }
     }
 }
