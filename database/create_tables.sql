@@ -84,5 +84,5 @@ CREATE TABLE settings (
     key_name VARCHAR(255) NOT NULL,
     value VARCHAR(255) NOT NULL,
     UNIQUE(user_id, key_name),
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
