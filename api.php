@@ -3,6 +3,9 @@
 use App\Controllers\HomeController;
 use App\Controllers\UserController;
 use App\Controllers\AuthController;
+use App\Controllers\ServiceController;
+use App\Middleware\AuthMiddleware;
+
 
 use App\Core\Router;
 
@@ -29,3 +32,10 @@ Router::group( 'api', function() {
 Router::group( 'api', function() {
     Router::post( '/login', [ AuthController::class, 'login' ] );
 } );
+
+
+Router::post('/delete', [ServiceController::class, 'deleteServices'])
+    ->addMiddleware(AuthMiddleware::class);
+
+
+
