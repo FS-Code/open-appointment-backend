@@ -17,4 +17,6 @@ Router::group( 'api', function() {
     Router::post( 'get-timeslots', [ \App\Controllers\AppointmentController::class, 'getAllTimeslots' ] );
 
     Router::post('me', [AuthController::class, 'me'], [\App\Middlewares\AuthMiddleware::class]);
+
+    Router::post('create-service', [ServiceController::class, 'createService']);
 } );
