@@ -30,30 +30,30 @@ Router::group('api', function () {
         $duration = $requestData['duration'];
         $businessHours = $requestData['business_hours'];
         $buffer = $requestData['buffer'];
-    
+
         $service = new Service();
         $service->setName($name);
         $service->setLocation($location);
         $service->setDetails($details);
         $service->setDuration($duration);
-    
+
         $bufferInstance = new Buffer();
-        $bufferId = $bufferInstance->getId(); 
-    
+        $bufferId = $bufferInstance->getId();
+
 
         $businessHoursInstance = new BusinessHours();
-        $businessHoursId = $BusinessHours->getId(); 
-    
+        $businessHoursId = $BusinessHours->getId();
+
         $service->setBusinessHoursId($businessHoursId);
         $service->setBufferId($bufferId);
-    
+
         $service->save();
-    
+
         $serviceId = $service->getId();
     
         // Return the service ID as the response
         echo json_encode(['service_id' => $serviceId]);
     });
-    
+
 });
 
