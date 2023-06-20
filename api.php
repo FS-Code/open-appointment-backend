@@ -15,6 +15,6 @@ Router::group( 'api', function() {
 	Router::post( 'register', [ AuthController::class, 'register' ] );
     Router::post( 'login', [ AuthController::class, 'login' ] );
     Router::post( 'get-timeslots', [ \App\Controllers\AppointmentController::class, 'getAllTimeslots' ] );
-
+    Router::post('save-settings',[\App\Controllers\SettingController::class, 'saveSettings']);
     Router::post('me', [AuthController::class, 'me'], [\App\Middlewares\AuthMiddleware::class]);
 } );
