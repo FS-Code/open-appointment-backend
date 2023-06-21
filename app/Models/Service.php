@@ -7,7 +7,9 @@ use App\Core\DB;
 use PDO;
 use Exception;
 
-class Service extends Model {
+
+class Service extends Model
+{
     private int $id;
     private int $userId;
     private string $name;
@@ -18,14 +20,14 @@ class Service extends Model {
     private int $bufferId;
 
     //ozu de foreign key oldugu ucun static eledim
-    public static function delete(int $id) : void
+    public static function delete(int $id): void
     {
         $db = DB::DB();
         $stmt = $db->prepare("SELECT buffer_id, business_hours_id FROM services WHERE id=?");
         $stmt->execute([$id]);
         $row = $stmt->fetch();
 
-        if(!$row){
+        if (!$row) {
             throw new \Exception('Service not found');
         }
 
@@ -39,22 +41,23 @@ class Service extends Model {
     public function save(): void
     {
         $val = [
-            'user_id'           => [ $this->getUserId(),          PDO::PARAM_INT ],
-            'name'              => [ $this->getName(),            PDO::PARAM_STR ],
-            'location'          => [ $this->getLocation(),        PDO::PARAM_STR ],
-            'details'           => [ $this->getDetails(),         PDO::PARAM_STR ],
-            'duration'          => [ $this->getDuration(),        PDO::PARAM_INT ],
-            'business_hours_id' => [ $this->getBusinessHoursId(), PDO::PARAM_INT ],
-            'buffer_id'         => [ $this->getBufferId(),        PDO::PARAM_INT ],
+            'user_id'           => [$this->getUserId(),          PDO::PARAM_INT],
+            'name'              => [$this->getName(),            PDO::PARAM_STR],
+            'location'          => [$this->getLocation(),        PDO::PARAM_STR],
+            'details'           => [$this->getDetails(),         PDO::PARAM_STR],
+            'duration'          => [$this->getDuration(),        PDO::PARAM_INT],
+            'business_hours_id' => [$this->getBusinessHoursId(), PDO::PARAM_INT],
+            'buffer_id'         => [$this->getBufferId(),        PDO::PARAM_INT],
         ];
 
-        if ( !isset($this->id) )
+        if (!isset($this->id))
             $this->insert($val);
         else
             $this->update($val);
     }
 
-    public function setUserId(int $userId): Service {
+    public function setUserId(int $userId): Service
+    {
         $this->userId = $userId;
 
         return $this;
@@ -89,7 +92,8 @@ class Service extends Model {
     {
         return $this->id;
     }
-    public function getUserId(): int {
+    public function getUserId(): int
+    {
         return $this->userId;
     }
     public function getName(): string
@@ -147,5 +151,22 @@ class Service extends Model {
     {
         if ($this->duration < 60)
             throw new Exception("Duration can't be shorter than a minute");
+    }
+
+    public static function getServicesByUserId(int $userId): array
+    {
+        $db = DB::DB();
+
+        $stmt = $db->prepare("SELECT * FROM services WHERE user_id = :userId");
+        $stmt->bindParam(":userId", $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $services = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (!$services) {
+            throw new Exception('No service found for this user');
+        }
+
+        return $services;
     }
 }
