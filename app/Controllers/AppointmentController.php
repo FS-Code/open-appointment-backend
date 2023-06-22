@@ -84,7 +84,7 @@ class AppointmentController {
 
 
 
-    public function createAppointment(Request $request, Response $response)
+    public static function createAppointment(Request $request, Response $response)
     {
         try {
             $serviceId     = $request->post('service_id');
