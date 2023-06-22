@@ -52,7 +52,7 @@ class Customer extends Model
         $this->email = $email;
     }
 
-    private function save():void
+    public function save():void
     {
         if (!!$this->id) {
             $this->update();

@@ -4,6 +4,9 @@ namespace App\Controllers;
 
 use App\Core\Request;
 use App\Core\Response;
+use App\Models\Appointment;
+use App\Models\Customer;
+use App\Models\Service;
 use App\Core\DB;
 use PDO;
 use Exception;
@@ -78,4 +81,64 @@ class AppointmentController {
 
         return [ 'dates' => $timeslots ];
     }
+
+
+
+    public function createAppointment(Request $request, Response $response)
+    {
+        try {
+            $serviceId     = $request->post('service_id');
+            $customerName  = $request->post('customer.name');
+            $customerEmail = $request->post('customer.email');
+            $startsAt      = $request->post('starts_at');
+
+            $statement = DB::DB()->prepare("SELECT * FROM customers WHERE email = :email");
+            $statement->bindParam(':email', $customerEmail);
+            $statement->execute();
+            $customer = $statement->fetch(\PDO::FETCH_ASSOC);
+
+                if (!$customer)
+                {
+                     $customer = new Customer();
+                     $customer->setName($customerName);
+                     $customer->setEmail($customerEmail);
+                     $customer->save();
+                }
+
+            $statement = DB::DB()->prepare("SELECT * FROM services WHERE id = :id");
+            $statement->bindParam(':id', $id);
+            $statement->execute();
+            $service = $statement->fetch(PDO::FETCH_ASSOC);
+
+            if (!$service)
+            {
+                throw new Exception('Service not found');
+            }
+
+            $appointment = new Appointment();
+            $appointment->setUserId($customer->getId());
+            $appointment->setServiceId($serviceId);
+            $appointment->setCustomerId($customer->getId());
+            $appointment->setStartDateTime($startsAt);
+            $appointment->setEndDateTime('');
+            $appointment->save();
+
+            $response->setStatusCreated();
+            $response->setData([
+                'data' => [
+                    'appointment_id' => $appointment->getId()
+                ]
+            ]);
+
+            return $response;
+        } catch (Exception $e) {
+            $response->setStatusBadRequest();
+            $response->setData([
+                'error' => $e->getMessage()
+            ]);
+            return $response;
+        }
+    }
+
+
 }
