@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Models\User;
 use App\Core\Response;
 use App\Core\Request;
 use App\Models\Settings;
