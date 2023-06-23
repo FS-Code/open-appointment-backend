@@ -4,6 +4,9 @@ namespace App\Controllers;
 
 use App\Core\Request;
 use App\Core\Response;
+use App\Models\Appointment;
+use App\Models\Customer;
+use App\Models\Service;
 use App\Core\DB;
 use PDO;
 use Exception;
@@ -78,4 +81,57 @@ class AppointmentController {
 
         return [ 'dates' => $timeslots ];
     }
+
+
+
+    public static function createAppointment()
+    {
+        try {
+            $serviceId     = Request::post('service_id');
+            $customerName  = Request::post('customer.name');
+            $customerEmail = Request::post('customer.email');
+            $startsAt      = Request::post('starts_at');
+
+            $statement = DB::DB()->prepare("SELECT * FROM customers WHERE email = :email");
+            $statement->bindParam(':email', $customerEmail);
+            $statement->execute();
+            $customer = $statement->fetch(\PDO::FETCH_ASSOC);
+
+                if (!$customer)
+                {
+                     $customer = new Customer();
+                     $customer->setName($customerName);
+                     $customer->setEmail($customerEmail);
+                     $customer->save();
+                }
+
+                $service = new Service();
+
+
+            $appointment = new Appointment();
+            $appointment->setUserId($customer->getId());
+            $appointment->setServiceId($serviceId);
+            $appointment->setCustomerId($customer->getId());
+            $appointment->setStartDateTime($startsAt);
+            $appointment->setEndDateTime('');
+            $appointment->save();
+
+            Response::setStatusCreated();
+              return ([
+                'data' => [
+                    'appointment_id' => $appointment->getId()
+                ]
+            ]);
+
+
+        } catch (Exception $e) {
+           Response::setStatusBadRequest();
+            return ([
+                'error' => $e->getMessage()
+            ]);
+
+        }
+    }
+
+
 }
