@@ -6,7 +6,7 @@ use App\Models\Service;
 
 class ServiceController
 {
-    public function getServices()
+    public static function getServices()
     {
         $userId = Request::$user->getId();
         $services = Service::getServicesByUserId($userId);
