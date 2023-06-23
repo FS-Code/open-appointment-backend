@@ -96,17 +96,6 @@ class AppointmentController
             }
 
             $service = new Service($appointment->getServiceId());
-            $serviceBufferId = $service->getBufferId();
-            $statement = DB::DB()->prepare( "SELECT before_time, after_time FROM buffers WHERE id = :id" );
-            $statement->bindParam( ':id',  $serviceBufferId);
-            $statement->execute();
-            $result = $statement->fetch( \PDO::FETCH_OBJ );
-
-            if ( $result ) {
-                $beforeTime = $result->before_time;
-                $afterTime = $result->after_time;
-            }
-
             $customer = new Customer($appointment->getCustomerId());
 
             $serviceBufferId = $service->getBufferId();
@@ -152,11 +141,9 @@ class AppointmentController
 
             Response::setStatusOk();
             echo json_encode($data);
-            exit();
         } catch (Exception $e) {
             Response::setStatus(500);
             echo json_encode(['error' => $e->getMessage()]);
-            exit();
         }
     }
 }

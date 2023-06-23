@@ -15,6 +15,8 @@ class Appointment extends Model{
     private string $starts_at;
     private string $ends_at;
 
+    private string $created_at;
+
     /**
      * @throws Exception
      */
@@ -35,6 +37,7 @@ class Appointment extends Model{
             $this->customer_id = $appointment->customer_id;
             $this->starts_at = $appointment->starts_at;
             $this->ends_at = $appointment->ends_at;
+            $this->created_at = $appointment->created_at;
         }
     }
 
@@ -61,6 +64,11 @@ class Appointment extends Model{
     public function getEndDateTime() : string{
         return $this->ends_at;
     }
+
+    public function getCreatedAt() : string{
+        return $this->created_at;
+    }
+
 
     public function setId(int $id) : Appointment{
         $this->id = $id;
