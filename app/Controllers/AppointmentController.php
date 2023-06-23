@@ -84,13 +84,13 @@ class AppointmentController {
 
 
 
-    public static function createAppointment(Request $request, Response $response)
+    public static function createAppointment()
     {
         try {
-            $serviceId     = $request->post('service_id');
-            $customerName  = $request->post('customer.name');
-            $customerEmail = $request->post('customer.email');
-            $startsAt      = $request->post('starts_at');
+            $serviceId     = Request::post('service_id');
+            $customerName  = Request::post('customer.name');
+            $customerEmail = Request::post('customer.email');
+            $startsAt      = Request::post('starts_at');
 
             $statement = DB::DB()->prepare("SELECT * FROM customers WHERE email = :email");
             $statement->bindParam(':email', $customerEmail);
@@ -105,15 +105,8 @@ class AppointmentController {
                      $customer->save();
                 }
 
-            $statement = DB::DB()->prepare("SELECT * FROM services WHERE id = :id");
-            $statement->bindParam(':id', $id);
-            $statement->execute();
-            $service = $statement->fetch(PDO::FETCH_ASSOC);
+                $service = new Service();
 
-            if (!$service)
-            {
-                throw new Exception('Service not found');
-            }
 
             $appointment = new Appointment();
             $appointment->setUserId($customer->getId());
@@ -123,20 +116,20 @@ class AppointmentController {
             $appointment->setEndDateTime('');
             $appointment->save();
 
-            $response->setStatusCreated();
-            $response->setData([
+            Response::setStatusCreated();
+              return ([
                 'data' => [
                     'appointment_id' => $appointment->getId()
                 ]
             ]);
 
-            return $response;
+
         } catch (Exception $e) {
-            $response->setStatusBadRequest();
-            $response->setData([
+           Response::setStatusBadRequest();
+            return ([
                 'error' => $e->getMessage()
             ]);
-            return $response;
+
         }
     }
 
