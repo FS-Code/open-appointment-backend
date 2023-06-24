@@ -11,24 +11,11 @@ use Exception;
 class SettingController{
     public static function saveSettings(){
         $settings = Request::body();
-        $jwt = Request::cookie("auth_token");
-        $user_id = null;
-
-        try {
-            $payload = AuthHelper::readJWT($jwt);
-            if(is_array($payload) && array_key_exists("user_id",$payload)){
-                $user_id = $payload["user_id"];
-            }else{
-                throw new Exception("Invalid payload or jwt token");
-            }
-            
-        } catch (Exception $e) {
-            Response::setStatusBadRequest();
-            return ['error' => $e->getMessage()];
-        }
+        $user_id = Request::$user->getId();
 
         if(empty($settings)){
-            throw new Exception("There are no settings");
+            Response::setStatusBadRequest();
+            return;
         }
 
         foreach ($settings as $key => $value) {
@@ -36,7 +23,6 @@ class SettingController{
         }
 
         Response::setStatusOk();
-
         return;
     }
 }
