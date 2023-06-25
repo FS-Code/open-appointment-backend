@@ -6,6 +6,8 @@ use App\Core\Request;
 use App\Core\Response;
 use App\Core\DB;
 use App\Models\Buffer;
+use App\Models\BusinessHours;
+use App\Models\WeekDay;
 use PDO;
 use Exception;
 use App\Models\Appointment;
@@ -85,65 +87,84 @@ class AppointmentController
         return ['dates' => $timeslots];
     }
 
-
-    public static function getAppointmentById($id): void
+    function getAllAppointments()
     {
         try {
-            $appointment = new Appointment($id);
+            $appointments = Appointment::getAllAppointments();
 
-            if (!$appointment->getId()) {
-                throw new Exception("Appointment not found");
-            }
-
-            $service = new Service($appointment->getServiceId());
-            $customer = new Customer($appointment->getCustomerId());
-
-            $serviceBufferId = $service->getBufferId();
-            $statement = DB::DB()->prepare( "SELECT before_time, after_time FROM buffers WHERE id = :id" );
-            $statement->bindParam( ':id',  $serviceBufferId);
-            $statement->execute();
-            $result = $statement->fetch( \PDO::FETCH_OBJ );
-
-            if ( $result ) {
-                $beforeTime = $result->before_time;
-                $afterTime = $result->after_time;
-            }
-
-
-            $data = [
-                'data' => [
-                    'appointments' => [
-                        [
-                            'id' => $appointment->getId(),
-                            'service' => [
-                                'id' => $service->getId(),
-                                'name' => $service->getName(),
-                                'location' => $service->getLocation(),
-                                'details' => $service->getDetails(),
-                                'duration' => $service->getDuration(),
-                                'business_hours' => self::getAllTimeslots(),
-                                "buffer" => [
-                                    "before" => $beforeTime,
-                                    "after" => $afterTime,
-                                ]
-                            ],
-                            'customer' => [
-                                'name' => $customer->getName(),
-                                'email' => $customer->getEmail(),
-                            ],
-                            'starts_at' => $appointment->getStartDateTime(),
-                            'ends_at' => $appointment->getEndDateTime(),
-                            'created_at' => $appointment->getCreatedAt(),
-                        ],
-                    ],
-                ],
+            $responseData = [];
+            $responseData['data'] = [
+                'appointments' => []
             ];
 
+            foreach ($appointments as $appointment) {
+
+                $service = new Service($appointment->getServiceId());
+                $customer = new Customer($appointment->getCustomerId());
+                $buffer = new Buffer($service->getBufferId());
+                $businesshours = new BusinessHours($service->getBusinessHoursId());
+                $monday = new WeekDay($businesshours->getMondayId());
+                $tuesday = new WeekDay($businesshours->getTuesdayId());
+                $wednesday = new WeekDay($businesshours->getWednesdayId());
+                $thursday = new WeekDay($businesshours->getThursdayId());
+                $friday = new WeekDay($businesshours->getFridayId());
+
+                $appointmentData = [
+                    'id' => $appointment->getId(),
+                    'service' => [
+                        'id' => $service->getId(),
+                        'name' => $service->getName(),
+                        'location' => $service->getLocation(),
+                        'details' => $service->getDetails(),
+                        'duration' => $service->getDuration(),
+                        'businessHours' => [
+                            'monday' => [
+                                'start' => $monday->getStartTime(),
+                                'ends' => $monday->getEndTime(),
+                            ],
+                            'tuesday' => [
+                                'start' => $tuesday->getStartTime(),
+                                'ends' => $tuesday->getEndTime(),
+                            ],
+                            'wednesday' => [
+                                'start' => $wednesday->getStartTime(),
+                                'ends' => $wednesday->getEndTime(),
+                            ],
+                            'thursday' => [
+                                'start' => $thursday->getStartTime(),
+                                'ends' => $thursday->getEndTime(),
+                            ],
+                            'friday' => [
+                                'start' => $friday->getStartTime(),
+                                'ends' => $friday->getEndTime(),
+                            ],
+                            'saturday' => null,
+                            'sunday' => null
+                        ],
+
+                        "buffer" => [
+                            "before" => $buffer->getBeforeTime(),
+                            "after" => $buffer->getBeforeTime(),
+                        ]
+                    ],
+                    'customer' => [
+                        'name' => $customer->getName(),
+                        'email' => $customer->getEmail()
+                    ],
+                    'starts_at' => $appointment->getStartsAt(),
+                    'ends_at' => $appointment->getEndsAt(),
+                    'created_at' => $appointment->getCreatedAt()
+                ];
+
+                $responseData['data']['appointments'][] = $appointmentData;
+            }
+
             Response::setStatusOk();
-            echo json_encode($data);
+            print_r($responseData);
         } catch (Exception $e) {
             Response::setStatus(500);
-            echo json_encode(['error' => $e->getMessage()]);
+            echo $e->getMessage();
         }
     }
+
 }

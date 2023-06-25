@@ -22,8 +22,8 @@ class Buffer extends Model {
 
             if ( $result ) {
                 $this->id = $id;
-                $this->$beforeTime = $result->before_time;
-                $this->$afterTime = $result->after_time;
+                $this->beforeTime = $result->before_time;
+                $this->afterTime = $result->after_time;
             }
         }
     }
