@@ -87,6 +87,8 @@ class AppointmentController
         return ['dates' => $timeslots];
     }
 
+
+
     function getAllAppointments()
     {
         try {
@@ -160,7 +162,7 @@ class AppointmentController
             }
 
             Response::setStatusOk();
-            print_r($responseData);
+            return $responseData;
         } catch (Exception $e) {
             Response::setStatus(500);
             echo $e->getMessage();
