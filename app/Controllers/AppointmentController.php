@@ -5,10 +5,18 @@ namespace App\Controllers;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\DB;
+use App\Models\Buffer;
+use App\Models\BusinessHours;
+use App\Models\WeekDay;
 use PDO;
 use Exception;
+use App\Models\Appointment;
+use App\Models\Service;
+use App\Models\Customer;
 
-class AppointmentController {
+
+class AppointmentController
+{
     public static function getAllTimeslots(): array
     {
         $serviceId = Request::post('service_id');
@@ -16,7 +24,7 @@ class AppointmentController {
 
         if (!isset($serviceId, $startFrom)) {
             Response::setStatusBadRequest();
-            return [ 'error' => 'Invalid request parameters' ];
+            return ['error' => 'Invalid request parameters'];
         }
 
         $stmt = DB::DB()->prepare("SELECT * FROM services WHERE id = :serviceId LIMIT 1");
@@ -27,7 +35,7 @@ class AppointmentController {
 
         if (!$service) {
             Response::setStatusBadRequest();
-            return [ 'error' => 'Service not found' ];
+            return ['error' => 'Service not found'];
         }
 
         $businessHoursId = $service['business_hours_id'];
@@ -76,6 +84,89 @@ class AppointmentController {
             $startFromDateTime->modify('+1 day');
         }
 
-        return [ 'dates' => $timeslots ];
+        return ['dates' => $timeslots];
     }
+
+
+
+    function getAllAppointments()
+    {
+        try {
+            $appointments = Appointment::getAllAppointments();
+
+            $responseData = [];
+            $responseData['data'] = [
+                'appointments' => []
+            ];
+
+            foreach ($appointments as $appointment) {
+
+                $service = new Service($appointment->getServiceId());
+                $customer = new Customer($appointment->getCustomerId());
+                $buffer = new Buffer($service->getBufferId());
+                $businesshours = new BusinessHours($service->getBusinessHoursId());
+                $monday = new WeekDay($businesshours->getMondayId());
+                $tuesday = new WeekDay($businesshours->getTuesdayId());
+                $wednesday = new WeekDay($businesshours->getWednesdayId());
+                $thursday = new WeekDay($businesshours->getThursdayId());
+                $friday = new WeekDay($businesshours->getFridayId());
+
+                $appointmentData = [
+                    'id' => $appointment->getId(),
+                    'service' => [
+                        'id' => $service->getId(),
+                        'name' => $service->getName(),
+                        'location' => $service->getLocation(),
+                        'details' => $service->getDetails(),
+                        'duration' => $service->getDuration(),
+                        'businessHours' => [
+                            'monday' => [
+                                'start' => $monday->getStartTime(),
+                                'ends' => $monday->getEndTime(),
+                            ],
+                            'tuesday' => [
+                                'start' => $tuesday->getStartTime(),
+                                'ends' => $tuesday->getEndTime(),
+                            ],
+                            'wednesday' => [
+                                'start' => $wednesday->getStartTime(),
+                                'ends' => $wednesday->getEndTime(),
+                            ],
+                            'thursday' => [
+                                'start' => $thursday->getStartTime(),
+                                'ends' => $thursday->getEndTime(),
+                            ],
+                            'friday' => [
+                                'start' => $friday->getStartTime(),
+                                'ends' => $friday->getEndTime(),
+                            ],
+                            'saturday' => null,
+                            'sunday' => null
+                        ],
+
+                        "buffer" => [
+                            "before" => $buffer->getBeforeTime(),
+                            "after" => $buffer->getBeforeTime(),
+                        ]
+                    ],
+                    'customer' => [
+                        'name' => $customer->getName(),
+                        'email' => $customer->getEmail()
+                    ],
+                    'starts_at' => $appointment->getStartsAt(),
+                    'ends_at' => $appointment->getEndsAt(),
+                    'created_at' => $appointment->getCreatedAt()
+                ];
+
+                $responseData['data']['appointments'][] = $appointmentData;
+            }
+
+            Response::setStatusOk();
+            return $responseData;
+        } catch (Exception $e) {
+            Response::setStatus(500);
+            echo $e->getMessage();
+        }
+    }
+
 }

@@ -17,6 +17,25 @@ class Service extends Model {
     private int $businessHoursId;
     private int $bufferId;
 
+    public function __construct( int|null $id = null )
+    {
+        if ( ! empty( $id ) ) {
+            $statement = DB::DB()->prepare( "SELECT user_id, name, location, duration, business_hours_id, buffer_id FROM services WHERE id = :id" );
+            $statement->bindParam( ':id', $id );
+            $statement->execute();
+            $result = $statement->fetch( \PDO::FETCH_OBJ );
+
+            if ( $result ) {
+                $this->id = $id;
+                $this->name = $result->name;
+                $this->location = $result->location;
+                $this->duration = $result->duration;
+                $this->businessHoursId = $result->business_hours_id;
+                $this->bufferId = $result->buffer_id;
+            }
+        }
+    }
+
     //ozu de foreign key oldugu ucun static eledim
     public static function delete(int $id) : void
     {

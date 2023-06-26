@@ -3,6 +3,8 @@
 use App\Controllers\HomeController;
 use App\Controllers\UserController;
 use App\Controllers\AuthController;
+use App\Controllers\AppointmentController;
+use App\Middlewares\AuthMiddleware;
 
 use App\Core\Router;
 
@@ -15,6 +17,7 @@ Router::group( 'api', function() {
 	Router::post( 'register', [ AuthController::class, 'register' ] );
     Router::post( 'login', [ AuthController::class, 'login' ] );
     Router::post( 'get-timeslots', [ \App\Controllers\AppointmentController::class, 'getAllTimeslots' ] );
+    Router::get('get-appointments', [AppointmentController::class, 'getAllAppointments'], [AuthMiddleware::class, 'index']);
 
     Router::post('me', [AuthController::class, 'me'], [\App\Middlewares\AuthMiddleware::class]);
 } );

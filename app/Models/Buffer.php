@@ -12,6 +12,22 @@ class Buffer extends Model {
     private int $beforeTime = 0;
     private int $afterTime = 0;
 
+    public function __construct( int|null $id = null )
+    {
+        if ( ! empty( $id ) ) {
+            $statement = DB::DB()->prepare( "SELECT before_time, after_time FROM buffers WHERE id = :id" );
+            $statement->bindParam( ':id', $id );
+            $statement->execute();
+            $result = $statement->fetch( \PDO::FETCH_OBJ );
+
+            if ( $result ) {
+                $this->id = $id;
+                $this->beforeTime = $result->before_time;
+                $this->afterTime = $result->after_time;
+            }
+        }
+    }
+
     public static function create(int $beforeTime = 0, int $afterTime = 0): self
     {
         $buffer = new Buffer();

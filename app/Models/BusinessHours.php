@@ -25,6 +25,27 @@ class BusinessHours extends Model {
     private ?int $saturdayId;
     private ?int $sundayId;
 
+    public function __construct( int|null $id = null )
+    {
+        if ( ! empty( $id ) ) {
+            $statement = DB::DB()->prepare( "SELECT * FROM business_hours WHERE id = :id" );
+            $statement->bindParam( ':id', $id );
+            $statement->execute();
+            $result = $statement->fetch( \PDO::FETCH_OBJ );
+
+            if ( $result ) {
+                $this->id = $id;
+                $this->mondayId = $result->monday;
+                $this->tuesdayId = $result->tuesday;
+                $this->wednesdayId = $result->wednesday;
+                $this->thursdayId = $result->thursday;
+                $this->fridayId = $result->friday;
+                $this->saturdayId = $result->saturday;
+                $this->sundayId = $result->sunday;
+            }
+        }
+    }
+
     public static function create(?int $mondayId,
                                   ?int $tuesdayId,
                                   ?int $wednesdayId,

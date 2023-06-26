@@ -12,6 +12,22 @@ class WeekDay extends Model {
     private string $startTime;
     private string $endTime;
 
+    public function __construct( int|null $id = null )
+    {
+        if ( ! empty( $id ) ) {
+            $statement = DB::DB()->prepare( "SELECT start_time, after_time FROM week_days WHERE id = :id" );
+            $statement->bindParam( ':id', $id );
+            $statement->execute();
+            $result = $statement->fetch( \PDO::FETCH_OBJ );
+
+            if ( $result ) {
+                $this->id = $id;
+                $this->startTime = $result->start_time;
+                $this->endTime = $result->end_time;
+            }
+        }
+    }
+
     public static function create(string $startTime, string $endTime): self
     {
         $weekday = new WeekDay();
