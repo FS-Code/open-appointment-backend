@@ -50,14 +50,12 @@ class ServiceController
                     ->setBufferId($buffer->getId());
 
             $service->save();
-
-            Response::setStatusOk();
-
             return ['data' => ['id' => $service->getId()]];
-        } catch (Exception $e) {
+        }
+         catch (Exception $e) {
             Response::setStatusBadRequest();
 
             return ['error' => $e->getMessage()];
-        }
+       }
     }
 }
