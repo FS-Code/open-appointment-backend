@@ -70,10 +70,21 @@ class Request
         return (isset($_GET[$key]) && trim($_GET[$key]) !== "") ? $_GET[$key] : $default;
     }
 
-    public static function post(string $key, $default = null): ?string
+    public static function post(string $key, $default = null)
     {
-        return (isset($_POST[$key]) && trim($_POST[$key]) !== "") ? $_POST[$key] : $default;
+        $value = $_POST[$key] ?? $default;
+    
+        if (is_array($value)) {
+            $value = array_map(function ($item) {
+                return is_string($item) ? trim($item) : $item;
+            }, $value);
+        } elseif (is_string($value)) {
+            $value = trim($value);
+        }
+    
+        return $value;
     }
+    
 
     public static function cookie(string $key, $default = null): ?string
     {
